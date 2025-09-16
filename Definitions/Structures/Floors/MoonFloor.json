@@ -1,0 +1,25 @@
+{
+    "ToolPath" : "Floors/FloorRegular",
+    "Layer" : "Floor",
+    "ParentId" : "Structure/Floors/BaseFloor",
+    "Components" : [
+        {
+            "Component" : "TileGraphics",
+            "Properties" : [
+                {"Key" : "Graphic","String": "Structures/Floors/MoonRock"},
+                {"Key" : "Shader", "String": "SeamlessFloorTile" }
+            ]
+        },
+        {
+            "Component" : "Constructable",
+            "Properties" : [
+                {
+                    "Key" : "Contents",
+                    "RawMaterials" : [
+                        { "TypeId" : "SteelPlate", "StackSize" : 2 }
+                    ]
+                }
+            ]
+        }
+    ]
+}

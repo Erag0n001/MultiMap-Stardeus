@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E7DC1A13-10E4-49C7-9B2C-60AA26626371}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MultiMap</RootNamespace>
+    <AssemblyName>MultiMap</AssemblyName>
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <LangVersion>latest</LangVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+    <NoWarn>$(NoWarn);CS0000</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugType>embedded</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Libraries\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>embedded</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Libraries\</OutputPath>
+    <DefineConstants>TRACE;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Game">
+      <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\Game.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Game.CodeGen">
+      <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\Game.CodeGen.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Game.Constants">
+      <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\Game.Constants.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Game.I18n">
+      <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\Game.I18n.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Game.Utils">
+      <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\Game.Utils.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="KLUnityUtils">
+      <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\KLUnityUtils.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="MessagePack">
+      <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\MessagePack.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="MessagePack.Annotations">
+      <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\MessagePack.Annotations.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="mscorlib">
+      <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\mscorlib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Unity.Mathematics">
+      <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\Unity.Mathematics.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UIElementsModule">
+      <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="websocket-sharp">
+      <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\websocket-sharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commands\ConsoleCommandClearMap.cs" />
+    <Compile Include="Commands\ConsoleCommandGenerateMap.cs" />
+    <Compile Include="Commands\ConsoleCommandDumpInfo.cs" />
+    <Compile Include="Commands\ConsoleCommandToggleMap.cs" />
+    <Compile Include="Extensions\BeingNameTextCompExtensions.cs" />
+    <Compile Include="Extensions\GPUBaseSpriteRendererExtensions.cs" />
+    <Compile Include="Extensions\ParticleSysExtensions.cs" />
+    <Compile Include="Extensions\RenderingSysExtensions.cs" />
+    <Compile Include="Extensions\ToolFreeSelectExtensions.cs" />
+    <Compile Include="Extensions\VFXShardedParticleRendererExtensions.cs" />
+    <Compile Include="Helpers\IslandHelper.cs" />
+    <Compile Include="Main.cs" />
+    <Compile Include="Maps\Generators\AsteroidGenerator.cs" />
+    <Compile Include="Maps\Generators\MapGenerator.cs" />
+    <Compile Include="Maps\MapBorderRenderer.cs" />
+    <Compile Include="Maps\MapSysData.cs" />
+    <Compile Include="Maps\SubMap.cs" />
+    <Compile Include="Maps\SubMapData.cs" />
+    <Compile Include="Misc\Constants.cs" />
+    <Compile Include="Misc\Printer.cs" />
+    <Compile Include="Misc\ReflectionUtilities.cs" />
+    <Compile Include="Misc\Utils.cs" />
+    <Compile Include="Patches\Access.cs" />
+    <Compile Include="Patches\AreaSysPatches.cs" />
+    <Compile Include="Patches\BaseRandomShipScenarioPatches.cs" />
+    <Compile Include="Patches\BeingNameTextCompPatches.cs" />
+    <Compile Include="Patches\CmdRecenterShipPatches.cs" />
+    <Compile Include="Patches\FreeSelectBeingHandlerPatches.cs" />
+    <Compile Include="Patches\FreeSelectContextPatches.cs" />
+    <Compile Include="Patches\FreeSelectObjHandlerPatches.cs" />
+    <Compile Include="Patches\FreeSelectTileHandlerPatches.cs" />
+    <Compile Include="Patches\GPURenderSlotPatches.cs" />
+    <Compile Include="Patches\MapPatches.cs" />
+    <Compile Include="Patches\MapRendererPatches.cs" />
+    <Compile Include="Patches\ModifierMapSizePatches.cs" />
+    <Compile Include="Patches\ParticleTrailCompPatches.cs" />
+    <Compile Include="Patches\Shared.cs" />
+    <Compile Include="Patches\ShipNavSysPatches.cs" />
+    <Compile Include="Patches\ShipOffScreenMarkerPatches.cs" />
+    <Compile Include="Patches\TileLayerPatches.cs" />
+    <Compile Include="Patches\ToolPlaceTilesPatches.cs" />
+    <Compile Include="Systems\MapSys.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+    <!-- Automatic version incrementation -->
+  
+  <Target Name="IncrementModVersion" AfterTargets="Build">
+    <IncrementModVersion JsonFile="$(ProjectDir)..\ModInfo.json" />
+  </Target>
+
+  <UsingTask TaskName="IncrementModVersion"
+             TaskFactory="CodeTaskFactory"
+             AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <JsonFile ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+        if (!File.Exists(JsonFile))
+        {
+            Log.LogError("File not found: " + JsonFile);
+            return false;
+        }
+
+        string text = File.ReadAllText(JsonFile);
+
+        text = Regex.Replace(text,
+            @"""ModVersion""\s*:\s*""(\d+)\.(\d+)\.(\d+)""",
+            delegate(Match m)
+            {
+                int major = int.Parse(m.Groups[1].Value);
+                int minor = int.Parse(m.Groups[2].Value);
+                int build = int.Parse(m.Groups[3].Value) + 1;
+
+                return "\"ModVersion\": \"" + major + "." + minor + "." + build + "\"";
+            }
+        );
+
+        File.WriteAllText(JsonFile, text);
+
+        return true;
+      ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+  
+
+</Project>

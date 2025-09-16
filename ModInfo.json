@@ -1,0 +1,19 @@
+{
+    "Id" : "Eragon.MultiMap",
+    "SteamWorkshop" : false,
+    "Name" : "MultiMap",
+    "Description" : "MultiMap",
+    "ModVersion": "1.0.374",
+    "GameVersion" : "0.14",
+    "Dependencies" : [ "Core" ],
+    "Atlases" : [
+        {
+            "Id" : "Eragon.MultiMap.Floors",
+            "Path" : "Structures/Floors",
+            "TexturePadding" : 16,
+            "InnerPadding" : 1.1,
+            "MipMapBias" : -2.5,
+            "MinimizeNumAtlases" : true
+        }
+    ]
+}
