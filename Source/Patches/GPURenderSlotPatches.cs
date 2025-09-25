@@ -1,8 +1,5 @@
-﻿using System.Diagnostics;
-using Game.Systems.Rendering;
+﻿using Game.Systems.Rendering;
 using HarmonyLib;
-using KL.Grid;
-using MultiMap.Misc;
 using MultiMap.Systems;
 using UnityEngine;
 

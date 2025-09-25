@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Game;
+using Game.CodeGen;
 using Game.Commands;
 using Game.Components;
 using Game.Data;
@@ -9,6 +10,7 @@ using Game.Input;
 using Game.Systems;
 using Game.Systems.Creatures;
 using Game.Visuals;
+using KL.Grid;
 using MessagePack;
 using MultiMap.Extensions;
 using MultiMap.Maps;
@@ -38,6 +40,8 @@ public class MapSys : GameSystem, ISaveableSpecial
     public static SubMap ShipMap { get; set; }
 
     public static SubMap SurfaceMap { get; set; }
+    
+    public static Grid<Tile> Terrain { get; private set; }
 
     public int CurrentId { get; private set; }
     
@@ -55,8 +59,14 @@ public class MapSys : GameSystem, ISaveableSpecial
         Instance = this;
         CameraControls = Utils.GetCameraControls();
         Ready.WhenGame(this, "MapSys_BorderRenderer", OnReady);
+        Ready.When(WhenH.AllSystemsLoaded, OnGameStateLoaded);
     }
 
+    private void OnGameStateLoaded()
+    {
+        Terrain = new Grid<Tile>("TerrainGrid", S.GridWidth, S.GridHeight, 1, Vector2.zero);
+    }
+    
     private void OnReady()
     {
         var objs = GameObject.FindObjectsByType<GridLineRenderer>(FindObjectsInactive.Include, FindObjectsSortMode.None);
@@ -66,7 +76,8 @@ public class MapSys : GameSystem, ISaveableSpecial
         }
         foreach (var map in AllMaps)
         {
-            map.Initialize();
+            map.InitializeTerrain();
+            map.InitializeBorderRenderers();
         }
         
         ActiveMap?.MarginRenderer.ToggleBounds(true);
@@ -82,6 +93,7 @@ public class MapSys : GameSystem, ISaveableSpecial
             map.Dispose();
             AllMaps.Remove(map);
         }
+        Terrain.Release();
     }
 
     public void RefreshRendering()
@@ -216,6 +228,20 @@ public class MapSys : GameSystem, ISaveableSpecial
         tool.Clear();
     }
 
+    public SubMap GetMapAt(int posIdx)
+    {
+        SubMap map = null;
+        foreach (var m in AllMaps)
+        {
+            if (m.IsWithinBound(posIdx))
+            {
+                map = m;
+                break;
+            }
+        }
+        return map;
+    }
+
     public void RegisterMap(SubMap toRegister)
     {
         if (toRegister.Id == -1)
@@ -239,11 +265,10 @@ public class MapSys : GameSystem, ISaveableSpecial
         if(sd.ModData.TryGetValue(ID, out var raw))
         {
             MapSysData data = MessagePackSerializer.Deserialize<MapSysData>(raw, CmdSaveGame.MsgPackOptions);
-            Printer.Warn(data.ActiveMapId);
             foreach (var mapData in data.SubMaps)
             {
                 var map = mapData.ToMap();
-                map.Initialize();
+                map.InitializeBorderRenderers();
                 Printer.Warn(map.Id);
                 AllMaps.Add(map);
             }

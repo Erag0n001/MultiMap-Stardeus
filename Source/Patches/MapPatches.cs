@@ -1,4 +1,5 @@
-﻿using Game.Data;
+﻿using Game;
+using Game.Data;
 using Game.Data.Space;
 using HarmonyLib;
 using MultiMap.Maps;
@@ -16,23 +17,20 @@ public static class MapPatches
         [HarmonyPrefix]
         public static void Prefix(ref int width, ref int height)
         {
-            Printer.Warn($"{width}, {height}");
-
-            var subMapSize = width / 2;
             if (MapSys.ActiveMap == null)
             {
                 Printer.Warn($"Generating default maps for new saves...");
                 var shipMap = new SubMap();
-                shipMap.Origin = Vector2Int.zero;
-                shipMap.Size = new Vector2Int(subMapSize, subMapSize);
-                shipMap.Name = Constants.ShipMap;
+                shipMap.Origin = new Vector2Int(1, 1);
+                shipMap.Size = new Vector2Int(MMConstants.MapSize, MMConstants.MapSize);
+                shipMap.Name = MMConstants.ShipMap;
                 MapSys.Instance.RegisterMap(shipMap);
                 MapSys.ShipMap = shipMap;
                 
                 var planet = new SubMap();
-                planet.Origin = new Vector2Int(subMapSize, 0);
-                planet.Size = new Vector2Int(subMapSize, subMapSize);
-                planet.Name = Constants.SurfaceMap;
+                planet.Origin = new Vector2Int(MMConstants.MapSize + 2, 1);
+                planet.Size = new Vector2Int(MMConstants.MapSize, MMConstants.MapSize);
+                planet.Name = MMConstants.SurfaceMap;
                 MapSys.Instance.RegisterMap(planet);
                 MapSys.SurfaceMap = planet;
                 MapSys.Instance.ToggleActiveMap(shipMap);

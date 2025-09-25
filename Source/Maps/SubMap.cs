@@ -2,7 +2,8 @@
 using System.Runtime.CompilerServices;
 using Game;
 using Game.Commands;
-using Game.Components;
+using Game.Constants;
+using Game.Data;
 using Game.Systems.Creatures;
 using KL.Grid;
 using MultiMap.Misc;
@@ -21,6 +22,7 @@ public class SubMap : IDisposable
     public Vector2Int Size;
     public Vector2? SavedCameraPosition;
     public float? SavedCameraZoom;
+    
     public int Width => Size.x;
     public int Height => Size.y;
     public Vector2 Center => Origin + Size / 2;
@@ -93,7 +95,35 @@ public class SubMap : IDisposable
         return true;
     }
 
-    public void Initialize()
+    public void InitializeTerrain()
+    {
+        for (int x = 0; x <= Width; x++)
+        {
+            var pos = Pos.FromXY(Origin.x + x, Origin.y);
+            var tile = Utils.BuildTile(MMConstants.MapEdge, pos, Facing.Type.Up);
+            EntityUtils.PlaceTile(tile, pos, true);
+        }
+        for (int x = 0; x <= Width; x++)
+        {
+            var pos = Pos.FromXY(Origin.x + x, Origin.y + Height);
+            var tile = Utils.BuildTile(MMConstants.MapEdge, pos, Facing.Type.Up);
+            EntityUtils.PlaceTile(tile, pos, true);
+        }
+        for (int y = 0; y <= Height; y++)
+        {
+            var pos = Pos.FromXY(Origin.x, Origin.y + y);
+            var tile = Utils.BuildTile(MMConstants.MapEdge, pos, Facing.Type.Up);
+            EntityUtils.PlaceTile(tile, pos, true);
+        }
+        for (int y = 0; y <= Height; y++)
+        {
+            var pos = Pos.FromXY(Origin.x + Width, Origin.y + y);
+            var tile = Utils.BuildTile(MMConstants.MapEdge, pos, Facing.Type.Up);
+            EntityUtils.PlaceTile(tile, pos, true);
+        }
+    }
+    
+    public void InitializeBorderRenderers()
     {
         MarginRenderer = new MapBorderRenderer();
         MarginRenderer.S = A.S;
@@ -139,10 +169,7 @@ public class SubMap : IDisposable
 
     private void ClearOtherEntities()
     {
-        foreach (var entity in A.S.Map.AllEntities.Values)
-        {
-            Printer.Warn(entity.GetType());
-        }
+
     }
     
     private void ClearTerrain()
@@ -159,12 +186,11 @@ public class SubMap : IDisposable
                         continue;
                     var pos = Pos.FromXY(x, y);
                     var tile = grid.Data[pos];
-                    if (tile != null && !tile.IsRemoved)
+                    if (tile != null && !tile.IsRemoved && tile.Definition != MMConstants.MapEdge)
                     {
                         CmdRemoveTile cmd = new CmdRemoveTile(tile);
                         cmd.Execute(A.S);
                     }
-                    grid.Data[pos] = null;
                 }
             }
         }

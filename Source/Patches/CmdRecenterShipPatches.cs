@@ -2,10 +2,8 @@
 using System.Reflection;
 using System.Reflection.Emit;
 using Game.Commands;
-using Game.Systems.Rendering;
 using HarmonyLib;
 using KL.Grid;
-using MultiMap.Misc;
 using MultiMap.Systems;
 
 namespace MultiMap.Patches;

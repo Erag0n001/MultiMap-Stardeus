@@ -16,7 +16,7 @@ public static class Shared
             {
                 if (s == 64)
                 {
-                    codes[i] = new CodeInstruction(OpCodes.Ldc_I4_S, Constants.ChunkSize);
+                    codes[i] = new CodeInstruction(OpCodes.Ldc_I4_S, MMConstants.ChunkSize);
                 }
             }
             if (code.operand is int j)
@@ -24,10 +24,10 @@ public static class Shared
                 switch (j)
                 {
                     case 192:
-                        codes[i] = new CodeInstruction(OpCodes.Ldc_I4, Constants.MinGridSize);
+                        codes[i] = new CodeInstruction(OpCodes.Ldc_I4, MMConstants.GridSize);
                         break;
                     case 448:
-                        codes[i] = new CodeInstruction(OpCodes.Ldc_I4, Constants.MaxGridSize);
+                        codes[i] = new CodeInstruction(OpCodes.Ldc_I4, MMConstants.GridSize);
                         break;
                 }
             }

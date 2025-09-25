@@ -3,6 +3,7 @@ using Game;
 using Game.Constants;
 using Game.Data;
 using Game.Visuals;
+using MultiMap.Misc;
 using MultiMap.Systems;
 using UnityEngine;
 
@@ -34,8 +35,8 @@ public class MapBorderRenderer : IDisposable
         {
             Border = Guidelines.Create("MapBorder", uiSpace: false, 0.2f);
         }
-        Margin.ShowRectWithCornerMargin(Parent.Center, Parent.Size - new Vector2(40f, 40f), Consts.CornerMargin - 20, Consts.GridBoundsColor);
-        Border.ShowRect(Parent.Center, Parent.Size, Consts.GridBoundsColor);
+        Margin.ShowRectWithCornerMargin(Parent.Center + new Vector2(0.5f, 0.5f), Parent.Size - new Vector2(MMConstants.MapMargin, MMConstants.MapMargin), MMConstants.MapMargin, Consts.GridBoundsColor);
+        Border.ShowRect(Parent.Center + new Vector2(0.5f, 0.5f), Parent.Size, Consts.GridBoundsColor);
     }
 
     private void OnToggleUI()

@@ -3,7 +3,6 @@ using Game;
 using Game.Commands;
 using Game.Constants;
 using KL.Grid;
-using MultiMap.Commands;
 using MultiMap.Misc;
 using UnityEngine;
 
@@ -31,7 +30,7 @@ public class AsteroidGenerator : MapGenerator
             }
         }
 
-        CmdPlaceTiles cmd = new CmdPlaceTiles(positions, Facing.Type.Up, Constants.MoonRock, true);
-        A.S.CmdQ.Enqueue(cmd);
+        CmdPlaceTiles cmd = new CmdPlaceTiles(positions, Facing.Type.Up, MMConstants.MoonRock, true);
+        cmd.Execute(A.S);
     }
 }

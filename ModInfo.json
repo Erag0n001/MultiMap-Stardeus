@@ -3,7 +3,7 @@
     "SteamWorkshop" : false,
     "Name" : "MultiMap",
     "Description" : "MultiMap",
-    "ModVersion": "1.0.374",
+    "ModVersion": "1.0.481",
     "GameVersion" : "0.14",
     "Dependencies" : [ "Core" ],
     "Atlases" : [

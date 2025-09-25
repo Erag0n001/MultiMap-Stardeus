@@ -2,31 +2,35 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
+using Game.Data;
 using Game.Systems;
 using HarmonyLib;
 
 namespace MultiMap.Patches;
 
-public static class ShipNavSysPatches
+public static class PlanningSysPatches
 {
-    [HarmonyPatch(typeof(ShipNavSys), nameof(ShipNavSys.EnterHyperspace))]
-    public static class EnterHyperspacePatch
+    [HarmonyPatch(typeof(PlanningSys), "UpdateOverlayData")]
+    public static class UpdateOverlayData
     {
         [HarmonyTranspiler]
+        [HarmonyDebug]
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions,
             ILGenerator ilGenerator)
         {
+            var methodToFind = AccessTools.Method(typeof(EntityUtils), nameof(EntityUtils.IsWithinMargin), [typeof(int), typeof(bool), typeof(bool)]);
             var codes = new List<CodeInstruction>(instructions);
             bool wasPatched = false;
-            int i = codes.Count - 1;
-            for (; i < codes.Count; i--)
+            int i = 0;
+            for (; i < codes.Count; i++)
             {
                 var c = codes[i];
-                if (c.operand is MethodInfo method && method == Access.AreaSysIslandCount)
+                if (c.operand is MethodInfo method && method == methodToFind)
                 {
-                    i -= 4;
-                    codes.RemoveRange(i, 7 + 7 + 4 + 5 + 8 + 6);
-                    codes[i].labels.Clear();
+                    i--;
+                    codes[i].opcode = OpCodes.Ldc_I4_1;
+                    i--;
+                    codes[i].opcode = OpCodes.Ldc_I4_1;
                     wasPatched = true;
                     break;
                 }
@@ -34,7 +38,7 @@ public static class ShipNavSysPatches
 
             if (!wasPatched)
             {
-                throw new Exception($"Failed to patch {typeof(ShipNavSys)}.{nameof(ShipNavSys.EnterHyperspace)}");
+                throw new Exception($"Failed to patch {typeof(PlanningSys)}");
             }
             
             return codes;

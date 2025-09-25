@@ -71,6 +71,10 @@
       <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\MessagePack.Annotations.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="ModdingOverhauled">
+      <HintPath>..\..\Modding Overhauled\Libraries\ModdingOverhauled.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="mscorlib">
       <HintPath>G:\Steam\steamapps\common\Stardeus\Stardeus_Data\Managed\mscorlib.dll</HintPath>
       <Private>False</Private>
@@ -125,6 +129,9 @@
     <Compile Include="Commands\ConsoleCommandGenerateMap.cs" />
     <Compile Include="Commands\ConsoleCommandDumpInfo.cs" />
     <Compile Include="Commands\ConsoleCommandToggleMap.cs" />
+    <Compile Include="Comps\SurfaceComp.cs" />
+    <Compile Include="Comps\UnbreakableComp.cs" />
+    <Compile Include="Extensions\AreaSysExtensions.cs" />
     <Compile Include="Extensions\BeingNameTextCompExtensions.cs" />
     <Compile Include="Extensions\GPUBaseSpriteRendererExtensions.cs" />
     <Compile Include="Extensions\ParticleSysExtensions.cs" />
@@ -132,22 +139,28 @@
     <Compile Include="Extensions\ToolFreeSelectExtensions.cs" />
     <Compile Include="Extensions\VFXShardedParticleRendererExtensions.cs" />
     <Compile Include="Helpers\IslandHelper.cs" />
+    <Compile Include="Helpers\TextureHelper.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Maps\Generators\AsteroidGenerator.cs" />
     <Compile Include="Maps\Generators\MapGenerator.cs" />
+    <Compile Include="Maps\Generators\PlanetSurfaceGenerator.cs" />
     <Compile Include="Maps\MapBorderRenderer.cs" />
     <Compile Include="Maps\MapSysData.cs" />
     <Compile Include="Maps\SubMap.cs" />
     <Compile Include="Maps\SubMapData.cs" />
-    <Compile Include="Misc\Constants.cs" />
+    <Compile Include="Misc\MMConstants.cs" />
+    <Compile Include="Misc\MMHashes.cs" />
     <Compile Include="Misc\Printer.cs" />
-    <Compile Include="Misc\ReflectionUtilities.cs" />
     <Compile Include="Misc\Utils.cs" />
     <Compile Include="Patches\Access.cs" />
     <Compile Include="Patches\AreaSysPatches.cs" />
     <Compile Include="Patches\BaseRandomShipScenarioPatches.cs" />
     <Compile Include="Patches\BeingNameTextCompPatches.cs" />
+    <Compile Include="Patches\CmdPlaceTilePatches.cs" />
+    <Compile Include="Patches\CmdPlaceTilesPatches.cs" />
     <Compile Include="Patches\CmdRecenterShipPatches.cs" />
+    <Compile Include="Patches\CmdRemoveTilePatches.cs" />
+    <Compile Include="Patches\DamageableCompPatches.cs" />
     <Compile Include="Patches\FreeSelectBeingHandlerPatches.cs" />
     <Compile Include="Patches\FreeSelectContextPatches.cs" />
     <Compile Include="Patches\FreeSelectObjHandlerPatches.cs" />
@@ -157,12 +170,32 @@
     <Compile Include="Patches\MapRendererPatches.cs" />
     <Compile Include="Patches\ModifierMapSizePatches.cs" />
     <Compile Include="Patches\ParticleTrailCompPatches.cs" />
+    <Compile Include="Patches\PlanningSysPatches.cs" />
+    <Compile Include="Patches\PosPatches.cs" />
     <Compile Include="Patches\Shared.cs" />
     <Compile Include="Patches\ShipNavSysPatches.cs" />
     <Compile Include="Patches\ShipOffScreenMarkerPatches.cs" />
     <Compile Include="Patches\TileLayerPatches.cs" />
+    <Compile Include="Patches\TileToolPatches.cs" />
     <Compile Include="Patches\ToolPlaceTilesPatches.cs" />
+    <Compile Include="Systems\Cache.cs" />
     <Compile Include="Systems\MapSys.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\Definitions\Structures\Floors\MapEdge.json">
+      <Link>Definitions\Structures\Floors\MapEdge.json</Link>
+    </Content>
+    <Content Include="..\Definitions\Structures\Floors\MoonFloor.json">
+      <Link>Definitions\Structures\Floors\MoonFloor.json</Link>
+    </Content>
+    <Content Include="..\ModInfo.json">
+      <Link>ModInfo.json</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="..\Definitions\Structures\Walls\">
+      <Link>Definitions\Structures\Walls</Link>
+    </Folder>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 

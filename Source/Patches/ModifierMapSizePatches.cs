@@ -16,7 +16,7 @@ public static class ModifierMapSizePatches
         {
             if (ModifierMapSize.Current == 320)
             {
-                ModifierMapSize.Current = Constants.DefaultGridSize;
+                ModifierMapSize.Current = MMConstants.GridSize;
             }
             ModifierMapSize.Current = ModifierMapSize.Current * 2;
             Pos.GridW = ModifierMapSize.Current;

@@ -11,6 +11,12 @@
             ]
         },
         {
+            "Component" : "Unbreakable"
+        },
+        {
+            "Component" : "Surface"
+        },
+        {
             "Component" : "Constructable",
             "Properties" : [
                 {

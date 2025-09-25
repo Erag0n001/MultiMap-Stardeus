@@ -2,9 +2,9 @@
 
 namespace MultiMap.Misc;
 
-public static class Printer
+internal static class Printer
 {
-    public const string Prefix = "[MT]> ";
+    public const string Prefix = "[MM]> ";
 
     // ReSharper disable once ChangeFieldTypeToSystemThreadingLock
     private static readonly object PrintLock = new object();

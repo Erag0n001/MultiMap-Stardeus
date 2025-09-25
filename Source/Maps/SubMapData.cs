@@ -1,4 +1,6 @@
-﻿using MessagePack;
+﻿using Game.Data;
+using KL.Grid;
+using MessagePack;
 using UnityEngine;
 
 namespace MultiMap.Maps;
@@ -12,7 +14,7 @@ public class SubMapData
     [Key(3)] public Vector2Int Origin;
     [Key(4)] public Vector2? SavedCameraPosition;
     [Key(5)] public float? SavedCameraZoom;
-
+    [Key(6)] public Grid<Tile> Terrain;
     public static SubMapData GetSubMapData(SubMap map)
     {
         var data = new SubMapData();

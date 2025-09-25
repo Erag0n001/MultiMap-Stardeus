@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using Game.Data;
+using KL.Grid;
 using MessagePack;
 using MultiMap.Systems;
 
@@ -11,7 +13,7 @@ public class MapSysData
     [Key(1)] public int ActiveMapId;
     [Key(2)] public int SurfaceMapId;
     [Key(3)] public int CurrentId;
-
+    [Key(4)] public Grid<Tile> TerrainGrid;
     public static MapSysData FromSys(MapSys sys)
     {
         var data = new MapSysData();

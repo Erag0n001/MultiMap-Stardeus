@@ -1,0 +1,44 @@
+﻿{
+  "Layer" : "Floor",
+  "ToolPath" : "Walls",
+  "ParentId" : "Structure/Floors/BaseFloor",
+  "Components": [
+    {
+      "Component" : "TileGraphics",
+      "Properties" : [
+        {"Key" : "Graphic","String": "Structures/Floors/MapEdgeDebug"},
+        { "Key" : "Shader", "String": "ReflectedFloorTile" }
+      ]
+    },
+    {
+      "Component" : "Flammable",
+      "Properties" : [
+        { "Key" : "FireChance", "Float" : 0.00 },
+        { "Key" : "FireDamageResistance", "Float" : 1.0 },
+        { "Key" : "SpreadIntoTemperatureCelsius", "Int" : 30000 },
+        { "Key" : "IgnitionTemperatureCelsius", "Int" : 30000 }
+      ]
+    },
+    {
+      "Component" : "Unbreakable"
+    },
+    {
+      "Component" : "Surface"
+    },
+    {
+      "Component" : "HullIntegrity",
+      "Properties" : [
+        { "Key" : "MaxInsulation", "Float" : 1 },
+        { "Key" : "MaxAirtight", "Float" : 1 }
+      ]
+    },
+    {
+      "Component" : "Passability",
+      "Properties" : [
+        { "Key" : "IsPassable", "Bool" : false },
+        { "Key" : "IsWalkable", "Bool" : false },
+        { "Key" : "Difficulty", "Float" : 1 }
+      ]
+    }
+  ]
+}

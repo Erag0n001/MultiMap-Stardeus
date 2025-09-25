@@ -14,11 +14,11 @@ using Game.Utils;
 using HarmonyLib;
 using KL.Clock;
 using KL.Grid;
-using KL.Utils;
 using MultiMap.Helpers;
-using MultiMap.Misc;
 using MultiMap.Systems;
 using Unity.Collections;
+using UnityEngine;
+using Cache = MultiMap.Systems.Cache;
 
 namespace MultiMap.Patches;
 
@@ -254,11 +254,6 @@ public static class AreaSysPatches
                     break;
                 }
             }
-
-            foreach (var code in codes)
-            {
-                Printer.Warn(code);
-            }
             
             if (!wasPatched)
             {
@@ -270,7 +265,27 @@ public static class AreaSysPatches
 
         public static bool Helper(KeyValuePair<int, HashSet<int>> island)
         {
-            return MapSys.ShipMap.IsWithinBound(island.Value.First());
+            if(island.Value != null && island.Value.Count > 0)
+                return MapSys.ShipMap.IsWithinBound(island.Value.First());
+            return false;
+        }
+    }
+    [HarmonyPatch(typeof(AreaSys), "RedrawAreaTexture")]
+    public static class RedrawAreaTexturePatch
+    {
+        [HarmonyPostfix]
+        public static void Postfix(RenderTexture ___areaTexture)
+        {
+            TextureHelper.SplitTextureRendererIntoQuadrants(___areaTexture, Cache.AreaSysTextures );
+        }
+    }
+    [HarmonyPatch(typeof(AreaSys), "RedrawIslandTexture")]
+    public static class RedrawIslandTexturePatch
+    {
+        [HarmonyPostfix]
+        public static void Postfix(RenderTexture ___areaTexture)
+        {
+            TextureHelper.SplitTextureRendererIntoQuadrants(___areaTexture, Cache.AreaSysTextures );
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Reflection.Emit;
 using Game.Systems.Ships;
 using HarmonyLib;
-using MultiMap.Misc;
 using MultiMap.Systems;
 using UnityEngine;
 
@@ -43,7 +42,7 @@ public static class ShipOffScreenMarkerPatches
                 {
                     codes.RemoveRange(i, 11);
                     var labels = code.labels;
-                    codes.InsertRange(i, new  CodeInstruction[]
+                    codes.InsertRange(i, new CodeInstruction[]
                     {
                         new CodeInstruction(OpCodes.Call, Access.ActiveMap).WithLabels(labels),
                         new(OpCodes.Call, Access.SubMapBottomLeft),
