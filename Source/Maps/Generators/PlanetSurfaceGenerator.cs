@@ -1,19 +1,18 @@
-﻿namespace MultiMap.Maps.Generators;
+﻿using UnityEngine;
+
+namespace MultiMap.Maps.Generators;
 
 public class PlanetSurfaceGenerator : AsteroidGenerator
 {
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void Load()
+    {
+        Register(new PlanetSurfaceGenerator());
+    }
     public override string Id => "PlanetSurfaceGenerator";
     public override void Generate(SubMap map)
     {
         base.Generate(map);
-        var xEnd = map.Origin.x + map.Size.x;
-        var yEnd = map.Origin.y + map.Size.y;
-        for (int x = map.Origin.x; x < xEnd; x++)
-        {
-            for (int y = map.Origin.y; y < yEnd; y++)
-            {
-                
-            }
-        }
+        map.Atmo.HasAtmosphere = true;
     }
 }

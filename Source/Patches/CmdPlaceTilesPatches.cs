@@ -23,11 +23,16 @@ public static class CmdPlaceTilesPatches
             {
                 return true;
             }
+            
             foreach (var tile in ___positions.ToList())
             {
                 var existing = A.S.Grids[WorldLayer.Floor].Get(tile);
                 if (existing != null && existing.HasComponent<SurfaceComp>())
                 {
+                    if (___tileDef.LayerId != WorldLayer.Floor)
+                    {
+                        continue;
+                    }
                     A.S.Grids[WorldLayer.Floor].Data[tile] = null;
                     continue;
                 }
@@ -42,6 +47,10 @@ public static class CmdPlaceTilesPatches
         [HarmonyPostfix]
         public static void Postfix(List<int> ___positions, Def ___tileDef)
         {
+            if (___tileDef.LayerId != WorldLayer.Floor)
+            {
+                return;
+            }
             if (___tileDef.HasComponent(MMHashes.SurfaceCompHash))
             {
                 foreach (var tile in ___positions)

@@ -25,7 +25,7 @@ public static class CmdPlaceTilePatches
                 Printer.Error($"Tried to place null tile at {Pos.String(___pos)}");
                 return false;
             }
-
+            
             if (___tileToPlace.HasComponent<SurfaceComp>())
             {
                 return true;
@@ -35,9 +35,12 @@ public static class CmdPlaceTilePatches
             if (existing != null && existing.HasComponent<SurfaceComp>())
             {
                 A.S.Grids[WorldLayer.Floor].Set(___tileToPlace.PosIdx, null);
-                return true;
+                if (___tileToPlace.Definition.LayerId != WorldLayer.Floor)
+                {
+                    return true;
+                }
             }
-            if (existing != null && existing.Definition == MMConstants.MapEdge)
+            if (existing != null && existing.HasComponent<UnbreakableComp>())
             {
                 return false;
             }

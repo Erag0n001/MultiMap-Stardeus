@@ -59,12 +59,24 @@ public class MapSys : GameSystem, ISaveableSpecial
         Instance = this;
         CameraControls = Utils.GetCameraControls();
         Ready.WhenGame(this, "MapSys_BorderRenderer", OnReady);
-        Ready.When(WhenH.AllSystemsLoaded, OnGameStateLoaded);
+        S.Sig.AfterLoadState.AddListener(OnGameStateLoaded);
     }
 
-    private void OnGameStateLoaded()
+    public void OnTick(long tick)
     {
-        Terrain = new Grid<Tile>("TerrainGrid", S.GridWidth, S.GridHeight, 1, Vector2.zero);
+        if (tick % 15 == 0)
+        {
+            foreach (var map in AllMaps)
+            {
+                map.RareTick();
+            }
+        }
+    }
+
+    private void OnGameStateLoaded(GameState state)
+    {
+        Terrain = new Grid<Tile>("TerrainGrid", state.GridWidth, state.GridHeight, 1, Vector2.zero);
+        state.Clock.OnTick.AddListener(OnTick);
     }
     
     private void OnReady()
@@ -94,6 +106,7 @@ public class MapSys : GameSystem, ISaveableSpecial
             AllMaps.Remove(map);
         }
         Terrain.Release();
+        Terrain = null;
     }
 
     public void RefreshRendering()

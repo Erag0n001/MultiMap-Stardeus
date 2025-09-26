@@ -22,6 +22,8 @@ public class SubMap : IDisposable
     public Vector2Int Size;
     public Vector2? SavedCameraPosition;
     public float? SavedCameraZoom;
+    public MapAtmo Atmo;
+    public MapBorderRenderer MarginRenderer;
     
     public int Width => Size.x;
     public int Height => Size.y;
@@ -30,8 +32,11 @@ public class SubMap : IDisposable
     public Vector2 TopRight => new Vector2(Origin.x + Width, Origin.y + Width);
     public Vector2 BottomLeft => new Vector2(Origin.x, Origin.y);
     public Vector2 BottomRight => new Vector2(Origin.x + Width, Origin.y);
-    
-    public MapBorderRenderer MarginRenderer;
+
+    public void RareTick()
+    {
+        Atmo.RareTick();
+    }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsWithinBound(float4 rawPos, int margins = 1)
@@ -121,6 +126,9 @@ public class SubMap : IDisposable
             var tile = Utils.BuildTile(MMConstants.MapEdge, pos, Facing.Type.Up);
             EntityUtils.PlaceTile(tile, pos, true);
         }
+
+        Atmo = new MapAtmo(this);
+        Atmo.SubScribe();
     }
     
     public void InitializeBorderRenderers()
@@ -130,13 +138,12 @@ public class SubMap : IDisposable
         MarginRenderer.Parent = this;
         MarginRenderer.SubScribe();
     }
-
+    
     public void Clear()
     {
         ClearTerrain();
         ClearBeings();
         ClearObjs();
-        ClearOtherEntities();
     }
 
     private void ClearBeings()
@@ -165,11 +172,6 @@ public class SubMap : IDisposable
                 A.S.Map.Objs.Destroy(obj, true);
             }
         }
-    }
-
-    private void ClearOtherEntities()
-    {
-
     }
     
     private void ClearTerrain()
@@ -204,5 +206,6 @@ public class SubMap : IDisposable
     public void Dispose()
     {
         MarginRenderer?.Dispose();
+        Atmo?.Dispose();
     }
 }

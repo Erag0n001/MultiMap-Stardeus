@@ -14,9 +14,12 @@ public class CmdRemoveTilePatches
     public static bool CheckIfShouldRemoveTile( int posIdx)
     {
         var existing = A.S.Grids[WorldLayer.Floor].Get(posIdx);
-        if (existing != null && (existing.HasComponent<UnbreakableComp>() || existing.HasComponent<SurfaceComp>()))
+        if (existing != null)
         {
-            return false;
+            if (existing.Definition.LayerId != WorldLayer.Floor)
+                return true;
+            if(existing.HasComponent<UnbreakableComp>() || existing.HasComponent<SurfaceComp>())
+                return false;
         }
         return true;
     }
@@ -31,8 +34,11 @@ public class CmdRemoveTilePatches
         }
 
         [HarmonyPostfix]
-        public static void Postfix(int ___posIdx)
+        public static void Postfix(int ___posIdx, int ___layer)
         {
+            if (___layer != WorldLayer.Floor)
+                return;
+            
             if (A.S.Map.Grids[WorldLayer.Floor].Get(___posIdx) == null)
             {
                 var map = MapSys.Instance.GetMapAt(___posIdx);
