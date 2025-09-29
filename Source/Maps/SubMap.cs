@@ -74,8 +74,9 @@ public class SubMap : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsWithinBound(PosRect rect, int margins = 1)
     {
-        return !(rect.MaxX < Origin.x + margins || rect.MinX > TopRight.x - margins ||
-                 rect.MaxY < Origin.y + margins|| rect.MinY > TopRight.y - margins);
+        var topRight = TopRight;
+        return rect.MaxX < topRight.x - margins && rect.MinX > Origin.x + margins &&
+                 rect.MaxY < topRight.y - margins && rect.MinY > Origin.y + margins;
     }
     
     public bool IsWithinMargin(int x, int y, int rotatedWidth, int rotatedHeight, bool ignoreMargin, bool ignoreCornerAreas)

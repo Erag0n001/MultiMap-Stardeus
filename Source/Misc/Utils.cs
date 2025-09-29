@@ -3,7 +3,9 @@ using Game;
 using Game.Constants;
 using Game.Data;
 using Game.Input;
+using Game.Migrations;
 using HarmonyLib;
+using KL.Utils;
 
 namespace MultiMap.Misc;
 
@@ -24,5 +26,10 @@ public static class Utils
         tile.Transform.PosIdx = pos;
         tile.Transform.Rotation = rotation;
         return tile;
+    }
+
+    public static void DeserializeTiles(Tile[] tiles, int layer, GameState s)
+    {
+
     }
 }

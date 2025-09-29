@@ -15,6 +15,7 @@ using HarmonyLib;
 using KL.Clock;
 using KL.Grid;
 using MultiMap.Helpers;
+using MultiMap.Misc;
 using MultiMap.Systems;
 using Unity.Collections;
 using UnityEngine;
@@ -30,7 +31,7 @@ public static class AreaSysPatches
         [HarmonyPrefix]
         public static bool Prefix(ref bool __result, ref string abandonWarning)
         {
-            var islands = IslandHelper.IslandsInActiveMapSortedBySizeAscending();
+            var islands = IslandHelper.IslandsInShipMapSortedBySizeAscending();
             if (islands.Count < 2)
             {
                 __result = false;
@@ -43,7 +44,7 @@ public static class AreaSysPatches
             foreach (var island in islands)
             {
                 Pos.ToXY(island.Value.First(), out var x, out var y);
-                if (!MapSys.ActiveMap.IsWithinMargin(x, y, 1, 1, false, false))
+                if (!MapSys.ActiveMap.IsWithinBound(x, y, 1))
                 {
                     if (stringBuilder.Length == 0)
                     {
@@ -66,7 +67,7 @@ public static class AreaSysPatches
         [HarmonyPrefix]
         public static bool Prefix(ref bool __result, ref bool isShipWithinMargin)
         {
-            var islands = IslandHelper.IslandsInActiveMapSortedBySizeAscending();
+            var islands = IslandHelper.IslandsInShipMapSortedBySizeAscending();
             if (islands.Count == 0)
             {
                 isShipWithinMargin = true;

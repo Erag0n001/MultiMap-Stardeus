@@ -43,6 +43,8 @@ public class MapSys : GameSystem, ISaveableSpecial
     
     public static Grid<Tile> Terrain { get; private set; }
 
+    public static bool FromSave { get; private set; }
+    
     public int CurrentId { get; private set; }
     
     public int NextId => ++CurrentId;
@@ -75,8 +77,12 @@ public class MapSys : GameSystem, ISaveableSpecial
 
     private void OnGameStateLoaded(GameState state)
     {
-        Terrain = new Grid<Tile>("TerrainGrid", state.GridWidth, state.GridHeight, 1, Vector2.zero);
         state.Clock.OnTick.AddListener(OnTick);
+        if (FromSave)
+        {
+            return;
+        }
+        Terrain = new Grid<Tile>("TerrainGrid", state.GridWidth, state.GridHeight, 1, Vector2.zero);
     }
     
     private void OnReady()
@@ -86,12 +92,17 @@ public class MapSys : GameSystem, ISaveableSpecial
         {
             GameObject.Destroy(obj);
         }
+
+        if (FromSave)
+        {
+            return;
+        }
+        
         foreach (var map in AllMaps)
         {
             map.InitializeTerrain();
             map.InitializeBorderRenderers();
         }
-        
         ActiveMap?.MarginRenderer.ToggleBounds(true);
     }
     
@@ -107,6 +118,8 @@ public class MapSys : GameSystem, ISaveableSpecial
         }
         Terrain.Release();
         Terrain = null;
+        FromSave = false;
+        CurrentId = 0;
     }
 
     public void RefreshRendering()
@@ -282,14 +295,18 @@ public class MapSys : GameSystem, ISaveableSpecial
             {
                 var map = mapData.ToMap();
                 map.InitializeBorderRenderers();
+                map.Atmo.SubScribe();
                 Printer.Warn(map.Id);
                 AllMaps.Add(map);
             }
-
+            
+            Terrain = new Grid<Tile>("TerrainGrid", data.Width, data.Height, 1, Vector2.zero);
+            Terrain.Data = data.Terrain;
             var active = AllMaps.FirstOrDefault(x => x.Id == data.ActiveMapId);
             ToggleActiveMap(active);
             SurfaceMap = AllMaps.FirstOrDefault(x => x.Id == data.SurfaceMapId);
             CurrentId = data.CurrentId;
+            FromSave = true;
         }
         else
         {

@@ -9,18 +9,16 @@ namespace MultiMap.Helpers;
 
 public static class IslandHelper
 {
-    public static Dictionary<int, HashSet<int>> IslandsInActiveMapSortedBySizeAscending()
+    public static Dictionary<int, HashSet<int>> IslandsInShipMapSortedBySizeAscending()
     {
-        var map = MapSys.ActiveMap;
+        var map = MapSys.ShipMap;
         var result = new Dictionary<int, HashSet<int>>();
         foreach (var island in A.S.Sys.Areas.Islands.OrderBy(x => x.Value.Count))
         {
             var rect = Pos.Encapsulate(island.Value);
-            Printer.Warn($"{rect.MinX}, {rect.MinY},  {rect.MaxX}, {rect.MaxY}");
-            Printer.Warn(map);
-            if (map.IsWithinBound(rect))
+            if (map.IsWithinBound(rect, 1))
             {
-                Printer.Warn("true");
+                Printer.Warn(rect);
                 result.Add(island.Key, island.Value);
             }
         }

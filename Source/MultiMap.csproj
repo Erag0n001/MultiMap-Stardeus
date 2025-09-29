@@ -215,6 +215,7 @@
     <Compile Include="Extensions\AreaSysExtensions.cs" />
     <Compile Include="Extensions\BeingNameTextCompExtensions.cs" />
     <Compile Include="Extensions\GPUBaseSpriteRendererExtensions.cs" />
+    <Compile Include="Extensions\MapExtensions.cs" />
     <Compile Include="Extensions\ParticleSysExtensions.cs" />
     <Compile Include="Extensions\RenderingSysExtensions.cs" />
     <Compile Include="Extensions\ToolFreeSelectExtensions.cs" />
@@ -226,6 +227,7 @@
     <Compile Include="Maps\Generators\MapGenerator.cs" />
     <Compile Include="Maps\Generators\PlanetSurfaceGenerator.cs" />
     <Compile Include="Maps\MapAtmo.cs" />
+    <Compile Include="Maps\MapAtmoData.cs" />
     <Compile Include="Maps\MapBorderRenderer.cs" />
     <Compile Include="Maps\MapSysData.cs" />
     <Compile Include="Maps\SubMap.cs" />

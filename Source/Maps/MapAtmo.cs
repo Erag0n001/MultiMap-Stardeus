@@ -20,9 +20,9 @@ public class MapAtmo(SubMap p)
     public float AtmosphereStrength = 0.7f;
     public HashSet<int> OutdoorTiles = new HashSet<int>();
 
-    private bool NeedsRecomputing = false;
-    private bool Disposed;
-    private bool Subscribed;
+    private bool NeedsRecomputing = true;
+    private bool Disposed = false;
+    private bool Subscribed = false;
 
     public void RareTick()
     {
@@ -141,6 +141,16 @@ public class MapAtmo(SubMap p)
         }
     }
 
+    public MapAtmoData ToData()
+    {
+        MapAtmoData data = new MapAtmoData();
+        data.AtmosphereLevel = AtmosphereLevel;
+        data.Temperature = Temperature;
+        data.AtmosphereStrength = AtmosphereStrength;
+        data.HasAtmosphere = HasAtmosphere;
+        return data;
+    }
+    
     public void Dispose()
     {
         if (Disposed) return;
@@ -153,5 +163,4 @@ public class MapAtmo(SubMap p)
     {
         Dispose();
     }
-    
 }

@@ -34,7 +34,7 @@ public static class Access
     public static readonly FieldInfo GridIntCenter = AccessTools.Field(typeof(Grid<int>), nameof(Grid<int>.Center));
 
     public static readonly MethodInfo IslandHelperShipMap = AccessTools.Method(typeof(IslandHelper),
-        nameof(IslandHelper.IslandsInActiveMapSortedBySizeAscending));
+        nameof(IslandHelper.IslandsInShipMapSortedBySizeAscending));
     
     public static readonly MethodInfo Vector2ImpVector3 = AccessTools.Method(typeof(Vector2), "op_Implicit", [typeof(Vector2)]);
     

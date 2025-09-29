@@ -48,7 +48,6 @@ public class Cache : GameSystem
 
     public override void Unload()
     {
-        throw new Exception("Test");
         // AreaSysTextures[0].Release();
         // AreaSysTextures[1].Release();
         // AreaSysTextures[2].Release();

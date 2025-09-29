@@ -1,6 +1,7 @@
 ﻿using Game.Data;
 using KL.Grid;
 using MessagePack;
+using MultiMap.Misc;
 using UnityEngine;
 
 namespace MultiMap.Maps;
@@ -14,8 +15,8 @@ public class SubMapData
     [Key(3)] public Vector2Int Origin;
     [Key(4)] public Vector2? SavedCameraPosition;
     [Key(5)] public float? SavedCameraZoom;
-    [Key(6)] public Grid<Tile> Terrain;
-    public static SubMapData GetSubMapData(SubMap map)
+    [Key(7)] public MapAtmoData Atmo;
+    public static SubMapData ToData(SubMap map)
     {
         var data = new SubMapData();
         data.Id = map.Id;
@@ -24,6 +25,7 @@ public class SubMapData
         data.Origin = map.Origin;
         data.SavedCameraPosition = map.SavedCameraPosition;
         data.SavedCameraZoom = map.SavedCameraZoom;
+        data.Atmo = map.Atmo.ToData();
         return data;
     }
 
@@ -36,6 +38,7 @@ public class SubMapData
         map.Origin = Origin;
         map.SavedCameraPosition = SavedCameraPosition;
         map.SavedCameraZoom = SavedCameraZoom;
+        map.Atmo = Atmo.ToMapAtmo(map);
         return map;
     }
 }
