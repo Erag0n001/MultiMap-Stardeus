@@ -1,0 +1,9 @@
+{
+    "Ints" : [
+        { "Key" : "OverlayPriority_Eragon_MapSys_ShipMap", "Int" : 1001 },
+        { "Key" : "OverlayPriority_Eragon_MapSys_SurfaceMap", "Int" : 1002 },
+        { "Key" : "OverlayPriority_Eragon_MapSys_MapMisc1", "Int" : 1003 },
+        { "Key" : "OverlayPriority_Eragon_MapSys_MapMisc2", "Int" : 1004 }
+    ]
+
+}

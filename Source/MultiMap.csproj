@@ -266,6 +266,9 @@
     <Compile Include="Systems\MapSys.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\Config\Tunable\UIOverlays.json">
+      <Link>Config\Tunable\UIOverlays.json</Link>
+    </Content>
     <Content Include="..\Definitions\Structures\Floors\MapEdge.json">
       <Link>Definitions\Structures\Floors\MapEdge.json</Link>
     </Content>

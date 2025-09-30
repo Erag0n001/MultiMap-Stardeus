@@ -5,6 +5,7 @@ using Game;
 using Game.CodeGen;
 using Game.Commands;
 using Game.Components;
+using Game.Constants;
 using Game.Data;
 using Game.Input;
 using Game.Systems;
@@ -19,10 +20,15 @@ using UnityEngine;
 
 namespace MultiMap.Systems;
 
-public class MapSys : GameSystem, ISaveableSpecial
+public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
 {
     public const int MapPerGridWidth = 2;
-    private const string ID = "Eragon.MapSys";
+    private const string ID = "Eragon_MapSys";
+    public const string ShipMapID = $"{ID}_ShipMap";
+    public const string SurfaceMapID = $"{ID}_SurfaceMap";
+    public const string MapMiscID1 = $"{ID}_MapMisc1";
+    public const string MapMiscID2 = $"{ID}_MapMisc2";
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void Register()
     {
@@ -34,27 +40,29 @@ public class MapSys : GameSystem, ISaveableSpecial
     public static MapSys Instance;
 
     public static readonly HashSet<SubMap> AllMaps = new HashSet<SubMap>();
-    
-    public static SubMap ActiveMap { get; set; }
 
+    public static SubMap ActiveMap { get; private set; }
+    
     public static SubMap ShipMap { get; set; }
 
     public static SubMap SurfaceMap { get; set; }
-    
+
     public static Grid<Tile> Terrain { get; private set; }
 
     public static bool FromSave { get; private set; }
-    
+
     public int CurrentId { get; private set; }
-    
+
     public int NextId => ++CurrentId;
-    
+
     private CameraControls CameraControls;
-    
+
+    public List<OverlayInfo> Overlays { get; } = new List<OverlayInfo>();
+
     // These are pawns deleted once we clear a map
     // todo find a purpose for them?
     public readonly List<BeingData> UnloadedBeings = new List<BeingData>();
-    
+
     protected override void OnInitialize()
     {
         Printer.Warn($"Initializing {Id}");
@@ -78,16 +86,56 @@ public class MapSys : GameSystem, ISaveableSpecial
     private void OnGameStateLoaded(GameState state)
     {
         state.Clock.OnTick.AddListener(OnTick);
+        Overlays.Add(new OverlayInfo(OverlayType.Information, ShipMapID, "Icons/White/Temperature"));
+        Overlays.Add(new OverlayInfo(OverlayType.Information, SurfaceMapID, "Icons/White/Temperature"));
+        Overlays.Add(new OverlayInfo(OverlayType.Information, MapMiscID1, "Icons/White/Temperature"));
+        Overlays.Add(new OverlayInfo(OverlayType.Information, MapMiscID2, "Icons/White/Temperature"));
+        S.Sig.ToggleOverlay.AddListener(OnToggleOverlay);
         if (FromSave)
         {
             return;
         }
+
         Terrain = new Grid<Tile>("TerrainGrid", state.GridWidth, state.GridHeight, 1, Vector2.zero);
+    }
+
+    public static SubMap GetSubMapFromMapID(string mapID)
+    {
+        switch (mapID)
+        {
+            case ShipMapID: return ShipMap;
+            case SurfaceMapID: return SurfaceMap;
+            default: return null;
+        }
+    }
+    
+    private void OnToggleOverlay(OverlayInfo info, bool on)
+    {
+        if (info.Id.StartsWith($"{ID}"))
+        {
+            if (on)
+            {
+                var map = GetSubMapFromMapID(info.Id);
+                if (map == null)
+                {
+                    Printer.Error($"Tried opening an overlay without a map!");
+                    return;
+                }
+                ToggleActiveMap(map);
+            }
+            else
+            {
+                if (ActiveMap == ShipMap)
+                    return;
+                ToggleActiveMap(ShipMap);
+            }
+        }
     }
     
     private void OnReady()
     {
-        var objs = GameObject.FindObjectsByType<GridLineRenderer>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        var objs = GameObject.FindObjectsByType<GridLineRenderer>(FindObjectsInactive.Include,
+            FindObjectsSortMode.None);
         foreach (var obj in objs)
         {
             GameObject.Destroy(obj);
@@ -97,15 +145,16 @@ public class MapSys : GameSystem, ISaveableSpecial
         {
             return;
         }
-        
+
         foreach (var map in AllMaps)
         {
             map.InitializeTerrain();
             map.InitializeBorderRenderers();
         }
+
         ActiveMap?.MarginRenderer.ToggleBounds(true);
     }
-    
+
     public override void Unload()
     {
         Instance = null;
@@ -116,6 +165,7 @@ public class MapSys : GameSystem, ISaveableSpecial
             map.Dispose();
             AllMaps.Remove(map);
         }
+
         Terrain.Release();
         Terrain = null;
         FromSave = false;
@@ -135,7 +185,7 @@ public class MapSys : GameSystem, ISaveableSpecial
         map = AllMaps.FirstOrDefault(map => map.Name == mapName);
         return map != null;
     }
-    
+
     public void ToggleActiveMap(SubMap to, bool shouldFocus = true)
     {
         if (to == ActiveMap)
@@ -167,8 +217,10 @@ public class MapSys : GameSystem, ISaveableSpecial
                 pos = ActiveMap.Center;
                 ortho = CameraControls.PreciseOrtho;
             }
+
             CameraControls.TeleportTo(pos, ortho);
         }
+
         RefreshRendering();
     }
 
@@ -180,7 +232,7 @@ public class MapSys : GameSystem, ISaveableSpecial
             var slots = renderer.Slots();
             foreach (var slot in slots)
             {
-                if(slot == null || !slot.IsAllocated)
+                if (slot == null || !slot.IsAllocated)
                     continue;
                 if (!to.IsWithinBound(slot._Pos))
                 {
@@ -194,7 +246,7 @@ public class MapSys : GameSystem, ISaveableSpecial
             }
         }
     }
-    
+
     private void ToggleBeings(SubMap to)
     {
         var beings = S.Map.AllEntities.Values.Where(x => x is Being);
@@ -205,6 +257,7 @@ public class MapSys : GameSystem, ISaveableSpecial
             {
                 name.NameText().GameObject.SetActive(to.IsWithinBound(being.Position));
             }
+
             var trail = being.GetComponent<ParticleTrailComp>();
             if (trail != null)
             {
@@ -224,16 +277,16 @@ public class MapSys : GameSystem, ISaveableSpecial
             var shards = particle.Shards();
             foreach (var shard in shards)
             {
-                if(shard == null)
+                if (shard == null)
                     continue;
                 foreach (var slot in shard.slots)
                 {
-                    if(slot != null)
+                    if (slot != null)
                         slot.IsVisible = to.IsWithinBound(slot.Pos);
                 }
             }
         }
-        
+
         // For some reason, there's multiple types of particles, go figure
 
         var particles2 = S.Sys.Particles.Particles();
@@ -265,6 +318,7 @@ public class MapSys : GameSystem, ISaveableSpecial
                 break;
             }
         }
+
         return map;
     }
 
@@ -274,6 +328,7 @@ public class MapSys : GameSystem, ISaveableSpecial
         {
             toRegister.Id = NextId;
         }
+
         AllMaps.Add(toRegister);
     }
 
@@ -288,7 +343,7 @@ public class MapSys : GameSystem, ISaveableSpecial
     public void LoadSpecial(SystemsDataSpecial sd)
     {
         Printer.Warn($"Loading {ID}");
-        if(sd.ModData.TryGetValue(ID, out var raw))
+        if (sd.ModData.TryGetValue(ID, out var raw))
         {
             MapSysData data = MessagePackSerializer.Deserialize<MapSysData>(raw, CmdSaveGame.MsgPackOptions);
             foreach (var mapData in data.SubMaps)
@@ -299,7 +354,7 @@ public class MapSys : GameSystem, ISaveableSpecial
                 Printer.Warn(map.Id);
                 AllMaps.Add(map);
             }
-            
+
             Terrain = new Grid<Tile>("TerrainGrid", data.Width, data.Height, 1, Vector2.zero);
             Terrain.Data = data.Terrain;
             var active = AllMaps.FirstOrDefault(x => x.Id == data.ActiveMapId);
