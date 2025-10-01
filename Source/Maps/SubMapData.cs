@@ -10,17 +10,19 @@ namespace MultiMap.Maps;
 public class SubMapData
 {
     [Key(0)] public int Id;
-    [Key(1)] public string Name;
-    [Key(2)] public Vector2Int Size;
-    [Key(3)] public Vector2Int Origin;
-    [Key(4)] public Vector2? SavedCameraPosition;
-    [Key(5)] public float? SavedCameraZoom;
+    [Key(1)] public string DisplayName;
+    [Key(2)] public string Type;
+    [Key(3)] public Vector2Int Size;
+    [Key(4)] public Vector2Int Origin;
+    [Key(5)] public Vector2? SavedCameraPosition;
+    [Key(6)] public float? SavedCameraZoom;
     [Key(7)] public MapAtmoData Atmo;
     public static SubMapData ToData(SubMap map)
     {
         var data = new SubMapData();
         data.Id = map.Id;
-        data.Name = map.Name;
+        data.Type = map.Type;
+        data.DisplayName = map.DisplayName;
         data.Size = map.Size;
         data.Origin = map.Origin;
         data.SavedCameraPosition = map.SavedCameraPosition;
@@ -33,7 +35,8 @@ public class SubMapData
     {
         SubMap map = new SubMap();
         map.Id = Id;
-        map.Name = Name;
+        map.Type = Type;
+        map.DisplayName = DisplayName;
         map.Size = Size;
         map.Origin = Origin;
         map.SavedCameraPosition = SavedCameraPosition;

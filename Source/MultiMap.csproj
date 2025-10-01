@@ -210,15 +210,18 @@
     <Compile Include="Commands\ConsoleCommandGenerateMap.cs" />
     <Compile Include="Commands\ConsoleCommandDumpInfo.cs" />
     <Compile Include="Commands\ConsoleCommandToggleMap.cs" />
+    <Compile Include="Comps\MapLockedComp.cs" />
     <Compile Include="Comps\SurfaceComp.cs" />
     <Compile Include="Comps\UnbreakableComp.cs" />
     <Compile Include="Extensions\AreaSysExtensions.cs" />
     <Compile Include="Extensions\BeingNameTextCompExtensions.cs" />
     <Compile Include="Extensions\GPUBaseSpriteRendererExtensions.cs" />
+    <Compile Include="Extensions\GridMenuExtensions.cs" />
     <Compile Include="Extensions\MapExtensions.cs" />
     <Compile Include="Extensions\ParticleSysExtensions.cs" />
     <Compile Include="Extensions\RenderingSysExtensions.cs" />
     <Compile Include="Extensions\ToolFreeSelectExtensions.cs" />
+    <Compile Include="Extensions\ToolPlaceTilesExtensions.cs" />
     <Compile Include="Extensions\VFXShardedParticleRendererExtensions.cs" />
     <Compile Include="Helpers\IslandHelper.cs" />
     <Compile Include="Helpers\TextureHelper.cs" />
@@ -236,32 +239,32 @@
     <Compile Include="Misc\MMHashes.cs" />
     <Compile Include="Misc\Printer.cs" />
     <Compile Include="Misc\Utils.cs" />
-    <Compile Include="Patches\Access.cs" />
-    <Compile Include="Patches\AreaSysPatches.cs" />
-    <Compile Include="Patches\BaseRandomShipScenarioPatches.cs" />
-    <Compile Include="Patches\BeingNameTextCompPatches.cs" />
-    <Compile Include="Patches\CmdPlaceTilePatches.cs" />
-    <Compile Include="Patches\CmdPlaceTilesPatches.cs" />
-    <Compile Include="Patches\CmdRecenterShipPatches.cs" />
-    <Compile Include="Patches\CmdRemoveTilePatches.cs" />
-    <Compile Include="Patches\DamageableCompPatches.cs" />
-    <Compile Include="Patches\FreeSelectBeingHandlerPatches.cs" />
-    <Compile Include="Patches\FreeSelectContextPatches.cs" />
-    <Compile Include="Patches\FreeSelectObjHandlerPatches.cs" />
-    <Compile Include="Patches\FreeSelectTileHandlerPatches.cs" />
-    <Compile Include="Patches\GPURenderSlotPatches.cs" />
-    <Compile Include="Patches\MapPatches.cs" />
-    <Compile Include="Patches\MapRendererPatches.cs" />
-    <Compile Include="Patches\ModifierMapSizePatches.cs" />
-    <Compile Include="Patches\ParticleTrailCompPatches.cs" />
-    <Compile Include="Patches\PlanningSysPatches.cs" />
-    <Compile Include="Patches\PosPatches.cs" />
-    <Compile Include="Patches\Shared.cs" />
-    <Compile Include="Patches\ShipNavSysPatches.cs" />
-    <Compile Include="Patches\ShipOffScreenMarkerPatches.cs" />
-    <Compile Include="Patches\TileLayerPatches.cs" />
-    <Compile Include="Patches\TileToolPatches.cs" />
-    <Compile Include="Patches\ToolPlaceTilesPatches.cs" />
+    <Compile Include="HarmonyPatches\Access.cs" />
+    <Compile Include="HarmonyPatches\AreaSysPatches.cs" />
+    <Compile Include="HarmonyPatches\BaseRandomShipScenarioPatches.cs" />
+    <Compile Include="HarmonyPatches\BeingNameTextCompPatches.cs" />
+    <Compile Include="HarmonyPatches\CmdPlaceTilePatches.cs" />
+    <Compile Include="HarmonyPatches\CmdPlaceTilesPatches.cs" />
+    <Compile Include="HarmonyPatches\CmdRecenterShipPatches.cs" />
+    <Compile Include="HarmonyPatches\CmdRemoveTilePatches.cs" />
+    <Compile Include="HarmonyPatches\DamageableCompPatches.cs" />
+    <Compile Include="HarmonyPatches\FreeSelectBeingHandlerPatches.cs" />
+    <Compile Include="HarmonyPatches\FreeSelectContextPatches.cs" />
+    <Compile Include="HarmonyPatches\FreeSelectObjHandlerPatches.cs" />
+    <Compile Include="HarmonyPatches\FreeSelectTileHandlerPatches.cs" />
+    <Compile Include="HarmonyPatches\GPURenderSlotPatches.cs" />
+    <Compile Include="HarmonyPatches\MapPatches.cs" />
+    <Compile Include="HarmonyPatches\MapRendererPatches.cs" />
+    <Compile Include="HarmonyPatches\ModifierMapSizePatches.cs" />
+    <Compile Include="HarmonyPatches\ParticleTrailCompPatches.cs" />
+    <Compile Include="HarmonyPatches\PlanningSysPatches.cs" />
+    <Compile Include="HarmonyPatches\PosPatches.cs" />
+    <Compile Include="HarmonyPatches\Shared.cs" />
+    <Compile Include="HarmonyPatches\ShipNavSysPatches.cs" />
+    <Compile Include="HarmonyPatches\ShipOffScreenMarkerPatches.cs" />
+    <Compile Include="HarmonyPatches\TileLayerPatches.cs" />
+    <Compile Include="HarmonyPatches\TileToolPatches.cs" />
+    <Compile Include="HarmonyPatches\ToolPlaceTilesPatches.cs" />
     <Compile Include="Systems\Cache.cs" />
     <Compile Include="Systems\MapSys.cs" />
   </ItemGroup>
@@ -277,6 +280,33 @@
     </Content>
     <Content Include="..\ModInfo.json">
       <Link>ModInfo.json</Link>
+    </Content>
+    <Content Include="..\Patches\Tiles\BridgeControls.json">
+      <Link>Patches\Tiles\BridgeControls.json</Link>
+    </Content>
+    <Content Include="..\Patches\Tiles\FTLDrive.json">
+      <Link>Patches\Tiles\FTLDrive.json</Link>
+    </Content>
+    <Content Include="..\Patches\Tiles\FusionDrive.json">
+      <Link>Patches\Tiles\FusionDrive.json</Link>
+    </Content>
+    <Content Include="..\Patches\Tiles\PrecisionThruster.json">
+      <Link>Patches\Tiles\PrecisionThruster.json</Link>
+    </Content>
+    <Content Include="..\Patches\Tiles\Thruster.json">
+      <Link>Patches\Tiles\Thruster.json</Link>
+    </Content>
+    <Content Include="..\Patches\Tiles\VoidRipper.json">
+      <Link>Patches\Tiles\VoidRipper.json</Link>
+    </Content>
+    <Content Include="..\Patches\Tiles\WarpDrive.json">
+      <Link>Patches\Tiles\WarpDrive.json</Link>
+    </Content>
+    <Content Include="..\Patches\Tiles\WarpDriveMini.json">
+      <Link>Patches\Tiles\WarpDriveMini.json</Link>
+    </Content>
+    <Content Include="..\Patches\Tiles\WinchHook.json">
+      <Link>Patches\Tiles\WinchHook.json</Link>
     </Content>
   </ItemGroup>
   <ItemGroup>

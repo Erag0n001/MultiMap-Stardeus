@@ -6,6 +6,7 @@ using Game.Constants;
 using Game.Data;
 using Game.Systems.Creatures;
 using KL.Grid;
+using KL.Utils;
 using MultiMap.Misc;
 using MultiMap.Systems;
 using Unity.Mathematics;
@@ -16,7 +17,19 @@ namespace MultiMap.Maps;
 public class SubMap : IDisposable
 {
     public string DisplayName;
-    public string Name;
+
+    private string type;
+    public string Type
+    {
+        get => type;
+        set
+        {
+            TypeH = Hashes.S(value);
+            type = value;
+        }
+    }
+
+    public int TypeH { get; private set; }
     public int Id = -1;
     public Vector2Int Origin;
     public Vector2Int Size;
@@ -24,7 +37,7 @@ public class SubMap : IDisposable
     public float? SavedCameraZoom;
     public MapAtmo Atmo;
     public MapBorderRenderer MarginRenderer;
-    
+
     public int Width => Size.x;
     public int Height => Size.y;
     public Vector2 Center => Origin + Size / 2;
@@ -201,7 +214,7 @@ public class SubMap : IDisposable
     
     public override string ToString()
     {
-        return $"SubMap:{Name}|{Id}|{Origin}|{Size}";
+        return $"SubMap:{Type}|{DisplayName}|{Id}|{Origin}|{Size}";
     }
 
     public void Dispose()

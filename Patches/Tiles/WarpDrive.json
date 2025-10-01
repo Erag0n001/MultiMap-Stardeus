@@ -1,0 +1,18 @@
+{
+  "target" : "Definitions/Objects/Devices/WarpDrive.json",
+  "operations" : [
+    {
+      "op" : "add",
+      "path" : "/Components/-",
+      "value" : 
+      {
+        "Component" : "MapLocked",
+        "Properties" : [
+          {
+            "Key" : "WhitelistedMaps", "StringSet" : ["Ship"]
+          }
+        ]
+      }
+    }
+  ]
+}

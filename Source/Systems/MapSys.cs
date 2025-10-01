@@ -10,6 +10,7 @@ using Game.Data;
 using Game.Input;
 using Game.Systems;
 using Game.Systems.Creatures;
+using Game.UI;
 using Game.Visuals;
 using KL.Grid;
 using MessagePack;
@@ -24,10 +25,13 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
 {
     public const int MapPerGridWidth = 2;
     private const string ID = "Eragon_MapSys";
-    public const string ShipMapID = $"{ID}_ShipMap";
-    public const string SurfaceMapID = $"{ID}_SurfaceMap";
-    public const string MapMiscID1 = $"{ID}_MapMisc1";
-    public const string MapMiscID2 = $"{ID}_MapMisc2";
+    public const string ShipMapID = $"Ship";
+    public const string SurfaceMapID = $"Surface";
+
+    public const string Map0ID = $"{ID}_Ship";
+    public const string Map1ID = $"{ID}_Surface";
+    public const string Map2ID = $"{ID}_SurfaceEncounter";
+    public const string Map3ID = $"{ID}_SpaceEncounter";
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void Register()
@@ -44,8 +48,9 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
     public static SubMap ActiveMap { get; private set; }
     
     public static SubMap ShipMap { get; set; }
-
     public static SubMap SurfaceMap { get; set; }
+    public static SubMap SurfaceEncounter { get; set; }
+    public static SubMap SpaceEncounter { get; set; }
 
     public static Grid<Tile> Terrain { get; private set; }
 
@@ -86,10 +91,10 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
     private void OnGameStateLoaded(GameState state)
     {
         state.Clock.OnTick.AddListener(OnTick);
-        Overlays.Add(new OverlayInfo(OverlayType.Information, ShipMapID, "Icons/White/Temperature"));
-        Overlays.Add(new OverlayInfo(OverlayType.Information, SurfaceMapID, "Icons/White/Temperature"));
-        Overlays.Add(new OverlayInfo(OverlayType.Information, MapMiscID1, "Icons/White/Temperature"));
-        Overlays.Add(new OverlayInfo(OverlayType.Information, MapMiscID2, "Icons/White/Temperature"));
+        Overlays.Add(new OverlayInfo(OverlayType.Information, Map0ID, "Icons/White/Temperature"));
+        Overlays.Add(new OverlayInfo(OverlayType.Information, Map1ID, "Icons/White/Temperature"));
+        Overlays.Add(new OverlayInfo(OverlayType.Information, Map2ID, "Icons/White/Temperature"));
+        Overlays.Add(new OverlayInfo(OverlayType.Information, Map3ID, "Icons/White/Temperature"));
         S.Sig.ToggleOverlay.AddListener(OnToggleOverlay);
         if (FromSave)
         {
@@ -99,14 +104,23 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
         Terrain = new Grid<Tile>("TerrainGrid", state.GridWidth, state.GridHeight, 1, Vector2.zero);
     }
 
-    public static SubMap GetSubMapFromMapID(string mapID)
+    public static SubMap GetSubMapFromQuadrant(string mapID)
     {
         switch (mapID)
         {
-            case ShipMapID: return ShipMap;
-            case SurfaceMapID: return SurfaceMap;
+            case Map0ID: return ShipMap;
+            case Map1ID: return SurfaceMap;
+            case Map2ID: return SurfaceEncounter;
+            case Map3ID: return SpaceEncounter;
             default: return null;
         }
+    }
+
+    public static SubMap TryGetSubMapFromId(int id)
+    {
+        if (id < -1)
+            return null;
+        return AllMaps.FirstOrDefault(x => x.Id == id);
     }
     
     private void OnToggleOverlay(OverlayInfo info, bool on)
@@ -115,7 +129,7 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
         {
             if (on)
             {
-                var map = GetSubMapFromMapID(info.Id);
+                var map = GetSubMapFromQuadrant(info.Id);
                 if (map == null)
                 {
                     Printer.Error($"Tried opening an overlay without a map!");
@@ -159,7 +173,10 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
     {
         Instance = null;
         ActiveMap = null;
+        ShipMap = null;
         SurfaceMap = null;
+        SurfaceEncounter = null;
+        SpaceEncounter = null;
         foreach (var map in AllMaps.ToArray())
         {
             map.Dispose();
@@ -182,7 +199,7 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
 
     public bool TryFindMapWithName(string mapName, out SubMap map)
     {
-        map = AllMaps.FirstOrDefault(map => map.Name == mapName);
+        map = AllMaps.FirstOrDefault(map => map.Type == mapName);
         return map != null;
     }
 
@@ -219,6 +236,13 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
             }
 
             CameraControls.TeleportTo(pos, ortho);
+        }
+
+        A.S.Toolbox.BuildTool.SetUnlockedParams(null);
+        Cache.GridMenu.SetNeedsFullRebuild(true);
+        if (UIShowing.ToolMenu)
+        {
+            Cache.GridMenu.Show();
         }
 
         RefreshRendering();
@@ -359,7 +383,10 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
             Terrain.Data = data.Terrain;
             var active = AllMaps.FirstOrDefault(x => x.Id == data.ActiveMapId);
             ToggleActiveMap(active);
-            SurfaceMap = AllMaps.FirstOrDefault(x => x.Id == data.SurfaceMapId);
+            ShipMap = TryGetSubMapFromId(data.Map0Id);
+            SurfaceMap = TryGetSubMapFromId(data.Map1Id);
+            SurfaceEncounter = TryGetSubMapFromId(data.Map2Id);
+            SpaceEncounter = TryGetSubMapFromId(data.Map3Id);
             CurrentId = data.CurrentId;
             FromSave = true;
         }

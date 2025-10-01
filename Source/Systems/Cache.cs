@@ -1,5 +1,6 @@
 ﻿using System;
 using Game.Systems;
+using Game.UI.GridMenu;
 using UnityEngine;
 
 namespace MultiMap.Systems;
@@ -18,7 +19,21 @@ public class Cache : GameSystem
     public static MeshRenderer[] MeshRenderers = new MeshRenderer[4];
     
     public static RenderTexture[] AreaSysTextures =  new RenderTexture[4];
-    
+
+    private static GridMenu gridMenu;
+
+    public static GridMenu GridMenu
+    {
+        get
+        {
+            if (gridMenu is null)
+            {
+                gridMenu = GameObject.FindFirstObjectByType<GridMenu>();
+            }
+            return gridMenu;
+        }
+    }
+
     public static RenderTexture[] GetTextureForOverlay(string id)
     {
         switch (id)
@@ -48,6 +63,7 @@ public class Cache : GameSystem
 
     public override void Unload()
     {
+        gridMenu = null;
         // AreaSysTextures[0].Release();
         // AreaSysTextures[1].Release();
         // AreaSysTextures[2].Release();
