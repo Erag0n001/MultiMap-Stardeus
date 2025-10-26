@@ -18,7 +18,6 @@ public static class IslandHelper
             var rect = Pos.Encapsulate(island.Value);
             if (map.IsWithinBound(rect, 1))
             {
-                Printer.Warn(rect);
                 result.Add(island.Key, island.Value);
             }
         }

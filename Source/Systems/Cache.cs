@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Game.Systems;
 using Game.UI.GridMenu;
 using UnityEngine;
@@ -21,7 +22,7 @@ public class Cache : GameSystem
     public static RenderTexture[] AreaSysTextures =  new RenderTexture[4];
 
     private static GridMenu gridMenu;
-
+    
     public static GridMenu GridMenu
     {
         get
@@ -34,6 +35,8 @@ public class Cache : GameSystem
         }
     }
 
+    public static List<int>[] SolidAreas = new List<int>[4];
+    
     public static RenderTexture[] GetTextureForOverlay(string id)
     {
         switch (id)

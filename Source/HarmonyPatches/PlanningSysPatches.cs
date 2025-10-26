@@ -14,7 +14,6 @@ public static class PlanningSysPatches
     public static class UpdateOverlayData
     {
         [HarmonyTranspiler]
-        [HarmonyDebug]
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions,
             ILGenerator ilGenerator)
         {

@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Game;
+using Game.Data;
 using Game.Modifiers;
 using Game.Systems;
 using HarmonyLib;
@@ -22,6 +23,7 @@ public static class Access
     public static readonly MethodInfo SubMapBottomLeft = AccessTools.PropertyGetter(typeof(SubMap), nameof(SubMap.BottomLeft));
     public static readonly MethodInfo SubMapBottomRight = AccessTools.PropertyGetter(typeof(SubMap), nameof(SubMap.BottomRight));
     public static readonly MethodInfo SubMapCenter = AccessTools.PropertyGetter(typeof(SubMap), nameof(SubMap.Center));
+    public static readonly MethodInfo SubMapWithinBoundInt = AccessTools.Method(typeof(SubMap), nameof(SubMap.IsWithinBound), [typeof(int), typeof(int)]);
     
     public static readonly MethodInfo PosPrime = AccessTools.Method(typeof(Pos), nameof(Pos.Prime));
     public static readonly MethodInfo PosFromVector = AccessTools.Method(typeof(Pos), nameof(Pos.FromVector));
@@ -39,4 +41,6 @@ public static class Access
     public static readonly MethodInfo Vector2ImpVector3 = AccessTools.Method(typeof(Vector2), "op_Implicit", [typeof(Vector2)]);
     
     public static readonly FieldInfo ModifierMapSizeCurrent = AccessTools.Field(typeof(ModifierMapSize), nameof(ModifierMapSize.Current));
+
+    public static MethodInfo EntityUtilsBoundsInt = AccessTools.Method(typeof(EntityUtils), nameof(EntityUtils.IsWithinBounds), [typeof(int)]);
 }

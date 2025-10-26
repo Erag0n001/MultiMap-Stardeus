@@ -10,12 +10,12 @@ namespace MultiMap
         static void StaticConstructorOnStartup() 
         {
             LoadHarmony();
-            Printer.Warn("MapTest loaded!");
+            Printer.Warn("MultiMap loaded!");
         }
 
         static void LoadHarmony() 
         { 
-            var harmony = new Harmony("Eragon.MapTest");
+            var harmony = new Harmony("Eragon.MultiMap");
             harmony.PatchAll();
         }
     }

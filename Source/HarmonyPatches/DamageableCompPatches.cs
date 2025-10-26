@@ -12,7 +12,7 @@ public static class DamageableCompPatches
         [HarmonyPrefix]
         public static bool Prefix(DamageableComp __instance)
         {
-            if (__instance.Entity.Definition.HasComponent(MMHashes.UnbreakableCompHash))
+            if (__instance.Entity.HasComponent(MMHashes.UnbreakableCompHash))
                 return false;
             return true;
         }
@@ -24,7 +24,7 @@ public static class DamageableCompPatches
         [HarmonyPrefix]
         public static bool Prefix(DamageableComp __instance)
         {
-            if (__instance.Entity.Definition.HasComponent(MMHashes.UnbreakableCompHash))
+            if (__instance.Entity.HasComponent(MMHashes.UnbreakableCompHash))
                 return false;
             return true;
         }

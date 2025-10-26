@@ -1,0 +1,21 @@
+{
+  "Layer" : "Walls",
+  "ParentId" : "Structure/Walls/BaseNaturalWall",
+  "Components" : [
+    {
+      "Component" : "TileGraphics",
+      "Properties" : [
+        { "Key" : "Graphic", "String" : "Structure/Walls/Rock01" }
+      ]
+    },
+    {
+      "Component" : "CornerFiller"
+    },
+    {
+      "Component" : "Damageable",
+      "Properties" : [
+        { "Key" : "Max", "Int" : 500 }
+      ]
+    }
+  ]
+}

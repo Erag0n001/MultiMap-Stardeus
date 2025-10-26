@@ -6,7 +6,7 @@
     {
       "Component" : "TileGraphics",
       "Properties" : [
-        {"Key" : "Graphic","String": "Structures/Floors/MapEdgeDebug"},
+        {"Key" : "Graphic","String": "Structure/Floors/MapEdgeDebug"},
         { "Key" : "Shader", "String": "ReflectedFloorTile" }
       ]
     },

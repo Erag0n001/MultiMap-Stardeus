@@ -375,7 +375,6 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
                 var map = mapData.ToMap();
                 map.InitializeBorderRenderers();
                 map.Atmo.SubScribe();
-                Printer.Warn(map.Id);
                 AllMaps.Add(map);
             }
 

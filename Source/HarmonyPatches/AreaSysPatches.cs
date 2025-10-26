@@ -15,6 +15,7 @@ using HarmonyLib;
 using KL.Clock;
 using KL.Grid;
 using MultiMap.Helpers;
+using MultiMap.Misc;
 using MultiMap.Systems;
 using Unity.Collections;
 using UnityEngine;
@@ -147,44 +148,161 @@ public static class AreaSysPatches
         {
             var helper = AccessTools.Method(typeof(AfterFloodPatch), nameof(Helper));
             var codes = new List<CodeInstruction>(instructions);
-            bool wasPatched = false;
             int i = 0;
-            for (; i < codes.Count; i++)
+
+            var solidAreaField = AccessTools.Field(typeof(AreaSys), "solidArea");
+            
+            if (!RemoveClear())
             {
-                var code = codes[i];
-                if (code.operand is FieldInfo field && field == Access.ReadyGen)
-                {
-                    var labels = code.ExtractLabels();
-                    codes.InsertRange(i, new CodeInstruction[]{
-                        new(OpCodes.Ldarg_S, 0),
-                        new(OpCodes.Ldfld, AccessTools.Field(typeof(AreaSys), "islandIds")),
-                        new CodeInstruction(OpCodes.Call, helper).WithLabels(labels)
-                        }
-                    );
-                    wasPatched = true;
-                    break;
-                }
+                throw new Exception($"Failed to patch {nameof(RemoveClear)}.");
             }
 
-            if (!wasPatched)
+            if (!CheckIsMapEdge())
             {
-                throw new Exception($"Failed to patch {nameof(AfterFloodPatch)}.");
+                throw new Exception($"Failed to patch {nameof(CheckIsMapEdge)}.");
             }
 
+            if (!RemoveAdd())
+            {
+                throw new Exception($"Failed to patch {nameof(RemoveAdd)}.");
+            }
+
+            if (!CallHelper())
+            {
+                throw new Exception($"Failed to patch {nameof(CallHelper)}.");
+            }
+
+            if (!RemoveSort())
+            {
+                throw new Exception($"Failed to patch {nameof(RemoveSort)}.");
+            }
+            
             return codes;
+
+            bool CheckIsMapEdge()
+            {
+                for (; i < codes.Count; i++)
+                {
+                    var code = codes[i];
+                    if (code.opcode == OpCodes.Ldloc_S)
+                    {
+                        var local = (LocalBuilder)code.operand;
+                        if (local.LocalIndex == 4)
+                        {
+                            i++;
+                            var label = (Label)codes[i].operand;
+                            i++;
+                            codes.InsertRange(i, new CodeInstruction[]
+                            {
+                                new(OpCodes.Ldloc_S, local),
+                                new(OpCodes.Call, AccessTools.Method(typeof(AfterFloodPatch), nameof(IsMapEdge))),
+                                new(OpCodes.Brtrue, label)
+                            });
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+            
+            bool CallHelper()
+            {
+                for (; i < codes.Count; i++)
+                {
+                    var code = codes[i];
+                    if (code.operand is FieldInfo field && field == Access.ReadyGen)
+                    {
+                        var labels = code.ExtractLabels();
+                        codes.InsertRange(i, new CodeInstruction[]{
+                                new(OpCodes.Ldarg_S, 0),
+                                new(OpCodes.Ldfld, AccessTools.Field(typeof(AreaSys), "islandIds")),
+                                new CodeInstruction(OpCodes.Call, helper).WithLabels(labels)
+                            }
+                        );
+                        return true;
+                    }
+                }
+                return false;
+            }
+            
+            bool RemoveAdd()
+            {
+                for (; i < codes.Count; i++)
+                {
+                    var code = codes[i];
+                    if (code.operand is FieldInfo field && field == solidAreaField)
+                    {
+                        i--;
+                        codes.RemoveRange(i, 4);
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+            
+            bool RemoveClear()
+            {
+                for (; i < codes.Count; i++)
+                {
+                    var code = codes[i];
+                    if (code.operand is FieldInfo field && field == solidAreaField)
+                    {
+                        i--;
+                        codes.RemoveRange(i, 3);
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            bool RemoveSort()
+            {
+                for (; i < codes.Count; i++)
+                {
+                    var code = codes[i];
+                    if (code.operand is FieldInfo field && field == solidAreaField)
+                    {
+                        i--;
+                        codes.RemoveRange(i, 3);
+                        return true;
+                    }
+                }
+
+                return false;
+            }
         }
 
+        public static bool IsMapEdge(int posIdx)
+        {
+            var tile = EntityUtils.FloorAt(posIdx);
+            if (tile != null && tile.Definition == MMConstants.MapEdge)
+            {
+                return true;
+            }
+            return false;
+        }
+        
         public static void Helper(NativeArray<int> islandIds)
         {
             var id = 1;
             var newIslands = new Dictionary<int, HashSet<int>>();
             var idMap = new Dictionary<(int original, int quadrant), int>();
+            var solidAreas = new List<int>[4];
+            
+            for (var index = 0; index < solidAreas.Length; index++)
+            {
+                solidAreas[index] = new List<int>();
+            }
+
             foreach (var island in A.S.Sys.Areas.Islands)
             {
                 int original = island.Key;
-                foreach (var tile in island.Value)
+                foreach (var posIdx in island.Value)
                 {
-                    Pos.ToXY(tile, out var x, out var y);
+                    Pos.ToXY(posIdx, out var x, out var y);
                     
                     int quadrant = (x >= A.S.GridWidth / 2 ? 1 : 0)
                                    | (y >= A.S.GridHeight / 2 ? 2 : 0);
@@ -202,12 +320,24 @@ public static class AreaSysPatches
                         newIslands[newId] = set;
                     }
                     
-                    islandIds[tile] = newId;
-                    set.Add(tile);
+                    solidAreas[quadrant].Add(posIdx);
+                    
+                    islandIds[posIdx] = newId;
+                    set.Add(posIdx);
                 }
             }
 
+            if (!Ready.Gen)
+            {
+                foreach (var solidArea in solidAreas)
+                {
+                    solidArea.Sort();
+                }
+            }
+            
+            Cache.SolidAreas = solidAreas;
             A.S.Sys.Areas.Islands = newIslands;
+            A.S.Situation.Islands = newIslands.Count;
         }
     }
 
@@ -286,6 +416,17 @@ public static class AreaSysPatches
         public static void Postfix(RenderTexture ___areaTexture)
         {
             TextureHelper.SplitTextureRendererIntoQuadrants(___areaTexture, Cache.AreaSysTextures );
+        }
+    }
+
+    [HarmonyPatch(typeof(AreaSys), $"get_{nameof(AreaSys.SolidArea)}")]
+    public static class GetSolidAreaPatch
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(ref List<int> __result)
+        {
+            __result = Cache.SolidAreas[0];
+            return false;
         }
     }
 }

@@ -36,10 +36,10 @@ public class MapSysData
         data.Terrain = MapSys.Terrain.Data;
         data.Width = MapSys.Instance.S.GridWidth;
         data.Height = MapSys.Instance.S.GridHeight;
-        data.Map0Id = MapSys.ShipMap.Id;
-        data.Map1Id = MapSys.SurfaceMap.Id;
-        data.Map2Id = MapSys.SurfaceEncounter.Id;
-        data.Map3Id = MapSys.SpaceEncounter.Id;
+        data.Map0Id = MapSys.ShipMap?.Id ?? -1;
+        data.Map1Id = MapSys.SurfaceMap?.Id ?? -1;
+        data.Map2Id = MapSys.SurfaceEncounter?.Id ?? -1;
+        data.Map3Id = MapSys.SpaceEncounter?.Id ?? -1;
         return data;
     }
 }

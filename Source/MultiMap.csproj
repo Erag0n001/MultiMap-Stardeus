@@ -210,9 +210,11 @@
     <Compile Include="Commands\ConsoleCommandGenerateMap.cs" />
     <Compile Include="Commands\ConsoleCommandDumpInfo.cs" />
     <Compile Include="Commands\ConsoleCommandToggleMap.cs" />
+    <Compile Include="Comps\CornerFillerComp.cs" />
     <Compile Include="Comps\MapLockedComp.cs" />
     <Compile Include="Comps\SurfaceComp.cs" />
     <Compile Include="Comps\UnbreakableComp.cs" />
+    <Compile Include="Defs\MapGeneratorDef.cs" />
     <Compile Include="Extensions\AreaSysExtensions.cs" />
     <Compile Include="Extensions\BeingNameTextCompExtensions.cs" />
     <Compile Include="Extensions\GPUBaseSpriteRendererExtensions.cs" />
@@ -220,9 +222,16 @@
     <Compile Include="Extensions\MapExtensions.cs" />
     <Compile Include="Extensions\ParticleSysExtensions.cs" />
     <Compile Include="Extensions\RenderingSysExtensions.cs" />
+    <Compile Include="Extensions\TileGraphicResolverExtensions.cs" />
+    <Compile Include="Extensions\TileLayerChunkExtensions.cs" />
+    <Compile Include="Extensions\TileLayerExtensions.cs" />
+    <Compile Include="Extensions\TileRendererExtensions.cs" />
     <Compile Include="Extensions\ToolFreeSelectExtensions.cs" />
     <Compile Include="Extensions\ToolPlaceTilesExtensions.cs" />
     <Compile Include="Extensions\VFXShardedParticleRendererExtensions.cs" />
+    <Compile Include="HarmonyPatches\SpaceEffectAsteroidFieldPatches.cs" />
+    <Compile Include="HarmonyPatches\TileGraphicResolverPatches.cs" />
+    <Compile Include="HarmonyPatches\TileLayerChunkPatches.cs" />
     <Compile Include="Helpers\IslandHelper.cs" />
     <Compile Include="Helpers\TextureHelper.cs" />
     <Compile Include="Main.cs" />
@@ -266,17 +275,24 @@
     <Compile Include="HarmonyPatches\TileToolPatches.cs" />
     <Compile Include="HarmonyPatches\ToolPlaceTilesPatches.cs" />
     <Compile Include="Systems\Cache.cs" />
+    <Compile Include="Systems\WallCornerRender.cs" />
     <Compile Include="Systems\MapSys.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\Config\Tunable\UIOverlays.json">
       <Link>Config\Tunable\UIOverlays.json</Link>
     </Content>
-    <Content Include="..\Definitions\Structures\Floors\MapEdge.json">
+    <Content Include="..\Definitions\Structure\Floors\MapEdge.json">
       <Link>Definitions\Structures\Floors\MapEdge.json</Link>
     </Content>
-    <Content Include="..\Definitions\Structures\Floors\MoonFloor.json">
+    <Content Include="..\Definitions\Structure\Floors\MoonFloor.json">
       <Link>Definitions\Structures\Floors\MoonFloor.json</Link>
+    </Content>
+    <Content Include="..\Definitions\Structure\Walls\BaseNaturalWall.json">
+      <Link>Definitions\Structures\Walls\BaseNaturalWall.json</Link>
+    </Content>
+    <Content Include="..\Definitions\Structure\Walls\RoughRock.json">
+      <Link>Definitions\Structures\Walls\RoughRock.json</Link>
     </Content>
     <Content Include="..\ModInfo.json">
       <Link>ModInfo.json</Link>
@@ -308,11 +324,6 @@
     <Content Include="..\Patches\Tiles\WinchHook.json">
       <Link>Patches\Tiles\WinchHook.json</Link>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="..\Definitions\Structures\Walls\">
-      <Link>Definitions\Structures\Walls</Link>
-    </Folder>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 

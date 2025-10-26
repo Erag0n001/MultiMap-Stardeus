@@ -1,4 +1,5 @@
-﻿using Game.Rendering;
+﻿using Game.Constants;
+using Game.Rendering;
 using HarmonyLib;
 using KL.Grid;
 using MultiMap.Systems;
@@ -20,6 +21,29 @@ public static class TileLayerPatches
                 return true;
             }
             return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(TileLayer), nameof(TileLayer.Render))]
+    public static class RenderPatch
+    {
+        [HarmonyPostfix]
+        public static void Postfix(TileLayer __instance)
+        {
+            WallCornerRender.RenderCorners();
+        }
+    }
+
+    [HarmonyPatch(typeof(TileLayer), "BuildChunks")]
+    public static class BuildChunksPatch
+    {
+        [HarmonyPostfix]
+        public static void Postfix(TileLayer __instance, Grid<TileLayerChunk> __result)
+        {
+            if (__instance.Layer == WorldLayer.Walls)
+            {
+                WallCornerRender.Instance.OnChunkCreated(__result);
+            }
         }
     }
 }

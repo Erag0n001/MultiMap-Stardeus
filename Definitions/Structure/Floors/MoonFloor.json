@@ -6,7 +6,7 @@
         {
             "Component" : "TileGraphics",
             "Properties" : [
-                {"Key" : "Graphic","String": "Structures/Floors/MoonRock"},
+                {"Key" : "Graphic","String": "Structure/Floors/MoonRock"},
                 {"Key" : "Shader", "String": "SeamlessFloorTile" }
             ]
         },

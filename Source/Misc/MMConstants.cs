@@ -15,7 +15,7 @@ public static class MMConstants
 
     public const int MapMargin = Consts.MapMargin;
     
-    private const string StructuresPath = "Structures";
+    private const string StructuresPath = "Structure";
     private const string FloorsPath = $"{StructuresPath}/Floors";
     public static readonly Def MoonRock = The.Defs.Get($"{FloorsPath}/MoonFloor");
     public static readonly Def MapEdge = The.Defs.Get($"{FloorsPath}/MapEdge");

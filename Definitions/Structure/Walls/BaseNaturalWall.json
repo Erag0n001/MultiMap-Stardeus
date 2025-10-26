@@ -1,0 +1,46 @@
+{
+  "ToolPath" : "Walls",
+  "Layer" : "Walls",
+  "ParentId" : "Structure/BaseStructure",
+  "IsAbstract" : true,
+  "Components" : [
+    {
+      "Component" : "TileTransform",
+      "Properties" : [
+        { "Key" : "PlacementType", "String" : "Row" }
+      ]
+    },
+    {
+      "Component" : "TileGraphics",
+      "Properties" : [
+        { "Key" : "Type", "String" : "Connected" }
+      ]
+    },
+    {
+      "Component" : "Damageable",
+      "Properties" : [
+        { "Key" : "Max", "Int" : 500 }
+      ]
+    },
+    {
+      "Component" : "HullIntegrity",
+      "Properties" : [
+        { "Key" : "MaxInsulation", "Float" : 0.995 },
+        { "Key" : "MaxAirtight", "Float" : 1 }
+      ]
+    },
+    {
+      "Component" : "Constructable",
+      "Properties" : [
+        { "Key" : "WorkAmount", "Int" : 150 },
+        { "Key" : "CanReplaceSameLayer", "Bool": true },
+        {
+          "Key" : "Contents",
+          "RawMaterials" : [
+            { "TypeId" : "Rock", "StackSize" : 5 }
+          ]
+        }
+      ]
+    }
+  ]
+}
