@@ -15,6 +15,7 @@
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
     <NoWarn>$(NoWarn);CS0000</NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>embedded</DebugType>
@@ -214,12 +215,12 @@
     <Compile Include="Comps\MapLockedComp.cs" />
     <Compile Include="Comps\SurfaceComp.cs" />
     <Compile Include="Comps\UnbreakableComp.cs" />
-    <Compile Include="Defs\MapGeneratorDef.cs" />
     <Compile Include="Extensions\AreaSysExtensions.cs" />
     <Compile Include="Extensions\BeingNameTextCompExtensions.cs" />
     <Compile Include="Extensions\GPUBaseSpriteRendererExtensions.cs" />
     <Compile Include="Extensions\GridMenuExtensions.cs" />
     <Compile Include="Extensions\MapExtensions.cs" />
+    <Compile Include="Extensions\ModLoaderExtension.cs" />
     <Compile Include="Extensions\ParticleSysExtensions.cs" />
     <Compile Include="Extensions\RenderingSysExtensions.cs" />
     <Compile Include="Extensions\TileGraphicResolverExtensions.cs" />
@@ -237,6 +238,7 @@
     <Compile Include="Main.cs" />
     <Compile Include="Maps\Generators\AsteroidGenerator.cs" />
     <Compile Include="Maps\Generators\MapGenerator.cs" />
+    <Compile Include="Maps\Generators\MapGeneratorDef.cs" />
     <Compile Include="Maps\Generators\PlanetSurfaceGenerator.cs" />
     <Compile Include="Maps\MapAtmo.cs" />
     <Compile Include="Maps\MapAtmoData.cs" />
@@ -244,8 +246,21 @@
     <Compile Include="Maps\MapSysData.cs" />
     <Compile Include="Maps\SubMap.cs" />
     <Compile Include="Maps\SubMapData.cs" />
+    <Compile Include="Misc\JsonSerializer\Cache.cs" />
+    <Compile Include="Misc\JsonSerializer\Deserializer.cs" />
+    <Compile Include="Misc\JsonSerializer\IO.cs" />
+    <Compile Include="Misc\JsonSerializer\JsonParser.cs" />
+    <Compile Include="Misc\JsonSerializer\JsonSerializer.cs" />
+    <Compile Include="Misc\JsonSerializer\JsonToken.cs" />
+    <Compile Include="Misc\JsonSerializer\JsonWriter.cs" />
+    <Compile Include="Misc\JsonSerializer\Serializer.cs" />
+    <Compile Include="Misc\JsonSerializer\TokenParser.cs" />
+    <Compile Include="Misc\JsonSerializer\TokenType.cs" />
     <Compile Include="Misc\MMConstants.cs" />
     <Compile Include="Misc\MMHashes.cs" />
+    <Compile Include="Misc\Native\NativeArray.cs" />
+    <Compile Include="Misc\Native\NativeConst.cs" />
+    <Compile Include="Misc\Native\NativeList.cs" />
     <Compile Include="Misc\Printer.cs" />
     <Compile Include="Misc\Utils.cs" />
     <Compile Include="HarmonyPatches\Access.cs" />
