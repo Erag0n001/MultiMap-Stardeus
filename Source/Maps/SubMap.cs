@@ -4,9 +4,14 @@ using Game;
 using Game.Commands;
 using Game.Constants;
 using Game.Data;
+using Game.Data.Factions;
+using Game.Data.Space;
 using Game.Systems.Creatures;
+using Game.Systems.Mental;
+using Game.Utils;
 using KL.Grid;
 using KL.Utils;
+using MultiMap.Maps.Biomes;
 using MultiMap.Misc;
 using MultiMap.Systems;
 using Unity.Mathematics;
@@ -18,18 +23,10 @@ public class SubMap : IDisposable
 {
     public string DisplayName;
 
-    private string type;
-    public string Type
-    {
-        get => type;
-        set
-        {
-            TypeH = Hashes.S(value);
-            type = value;
-        }
-    }
+    public string Type;
 
-    public int TypeH { get; private set; }
+    public SpaceObject SpaceObject;
+    
     public int Id = -1;
     public Vector2Int Origin;
     public Vector2Int Size;
@@ -37,7 +34,8 @@ public class SubMap : IDisposable
     public float? SavedCameraZoom;
     public MapAtmo Atmo;
     public MapBorderRenderer MarginRenderer;
-
+    public bool IsPermanent;
+    public BiomeDef Biome;
     public int Width => Size.x;
     public int Height => Size.y;
     public Vector2 Center => Origin + Size / 2;
@@ -46,6 +44,23 @@ public class SubMap : IDisposable
     public Vector2 BottomLeft => new Vector2(Origin.x, Origin.y);
     public Vector2 BottomRight => new Vector2(Origin.x + Width, Origin.y);
 
+    public bool CanBeSafelyDeleted()
+    {
+        if (IsPermanent)
+        {
+            return false;
+        }
+
+        foreach (var being in A.S.Beings.All)
+        {
+            if (being.HasData && being.Data.EffectiveFaction == FactionDef.Player && IsWithinBound(being.Position))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     public void RareTick()
     {
         Atmo.RareTick();
@@ -90,6 +105,18 @@ public class SubMap : IDisposable
         var topRight = TopRight;
         return rect.MaxX < topRight.x - margins && rect.MinX > Origin.x + margins &&
                  rect.MaxY < topRight.y - margins && rect.MinY > Origin.y + margins;
+    }
+    
+    public void SetDataFromDef(BiomeDef def)
+    {
+        bool hasAtmo = def.HasAtmosphere;
+        if (hasAtmo)
+        {
+            Atmo = new MapAtmo(this);
+            Atmo.AtmosphereLevel = def.Atmosphere.AtmosphereLevel;
+            Atmo.AtmosphereStrength = def.Atmosphere.AtmosphereStrength;
+            Atmo.Temperature = def.Atmosphere.Temperature;
+        }
     }
     
     public bool IsWithinMargin(int x, int y, int rotatedWidth, int rotatedHeight, bool ignoreMargin, bool ignoreCornerAreas)
@@ -210,6 +237,71 @@ public class SubMap : IDisposable
                 }
             }
         }
+    }
+
+    public void Abandon()
+    {
+        AbandonedSubMapData data = AbandonedSubMapData.ToData(this);
+        foreach (var being in A.S.Beings.All)
+        {
+            if (IsWithinBound(being.Position))
+            {
+                var beingData = being.Data;
+                BeingUtils.Eliminate(A.S, beingData, MMTranslations.Abandoned, 0L);
+                MapSys.Instance.UnloadedBeings.Add(beingData);
+            }
+        }
+        
+        foreach (var obj in A.S.Objs.All)
+        {
+            if (IsWithinBound(obj.PosIdx))
+            {
+                A.S.Map.Objs.Destroy(obj);
+            }
+        }
+        var size = Size.x * Size.y;
+        data.FloorDefs = new int[size];
+        data.WallDefs = new int[size];
+        data.MachineDefs = new int[size];
+        data.TerrainDefs = new int[size];
+        int i = 0;
+        for(int x = 0; x < Size.x; x++, i++)
+        {
+            for (int y = 0; y < Size.y; y++, i++)
+            {
+                var posX = x + Origin.x;
+                var posY = y + Origin.y;
+                var posIdx = Pos.FromXY(posX, posY);
+                var tile = A.S.Map.Grids[WorldLayer.Floor].Data[posIdx];
+                if (tile != null)
+                {
+                    data.FloorDefs[i] = tile.Definition.IdH;
+                }
+                var wall = A.S.Map.Grids[WorldLayer.Walls].Data[posIdx];
+                if (wall != null)
+                {
+                    data.WallDefs[i] = wall.Definition.IdH;
+                }
+
+                var machine = A.S.Map.Grids[WorldLayer.Objects].Data[posIdx];
+                if (machine != null)
+                {
+                    if (machine.Transform.IsMulti)
+                    {
+                        if (machine.Transform.Root.Id != machine.Id)
+                        {
+                            data.MachineDefs[i] = machine.Definition.IdH;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static SubMap Restore(AbandonedSubMapData data)
+    {
+        // todo
+        return null;
     }
     
     public override string ToString()

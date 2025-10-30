@@ -22,10 +22,11 @@ public class MapSysData
     [Key(13)] public int Map2Id;
     [Key(14)] public int Map3Id;
     [Key(15)] public int ActiveMapId;
+    [Key(16)] public Dictionary<int, int> SOSubMaps;
     public static MapSysData FromSys(MapSys sys)
     {
         var data = new MapSysData();
-        foreach (var map in MapSys.AllMaps)
+        foreach (var map in MapSys.AllMaps.Values)
         {
             SubMapData subData = SubMapData.ToData(map);
             data.SubMaps.Add(subData);
@@ -40,6 +41,11 @@ public class MapSysData
         data.Map1Id = MapSys.SurfaceMap?.Id ?? -1;
         data.Map2Id = MapSys.SurfaceEncounter?.Id ?? -1;
         data.Map3Id = MapSys.SpaceEncounter?.Id ?? -1;
+        data.SOSubMaps = new Dictionary<int, int>();
+        foreach (var map in MapSys.SOMaps)
+        {
+            data.SOSubMaps.Add(map.Key.Id, map.Value.Id);
+        }
         return data;
     }
 }

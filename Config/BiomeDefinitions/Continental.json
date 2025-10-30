@@ -1,0 +1,10 @@
+{
+  "Id": "Continental",
+  "Name" : "Continental",
+  "MapGeneratorId": "AsteroidGenerator",
+  "Atmosphere" : {
+    "AtmosphereLevel" : 0.3,
+    "Temperature" : 280,
+    "AtmosphereStrength" : 0.7
+  }
+}

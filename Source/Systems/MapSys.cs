@@ -7,6 +7,7 @@ using Game.Commands;
 using Game.Components;
 using Game.Constants;
 using Game.Data;
+using Game.Data.Space;
 using Game.Input;
 using Game.Systems;
 using Game.Systems.Creatures;
@@ -43,8 +44,10 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
 
     public static MapSys Instance;
 
-    public static readonly HashSet<SubMap> AllMaps = new HashSet<SubMap>();
-
+    public static Dictionary<SpaceObject, SubMap> SOMaps = new Dictionary<SpaceObject, SubMap>();
+    
+    public static Dictionary<int, SubMap> AllMaps = new Dictionary<int, SubMap>();
+    
     public static SubMap ActiveMap { get; private set; }
     
     public static SubMap ShipMap { get; set; }
@@ -81,7 +84,7 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
     {
         if (tick % 15 == 0)
         {
-            foreach (var map in AllMaps)
+            foreach (var map in AllMaps.Values)
             {
                 map.RareTick();
             }
@@ -120,7 +123,8 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
     {
         if (id < -1)
             return null;
-        return AllMaps.FirstOrDefault(x => x.Id == id);
+        AllMaps.TryGetValue(id, out var map);
+        return map;
     }
     
     private void OnToggleOverlay(OverlayInfo info, bool on)
@@ -160,7 +164,7 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
             return;
         }
 
-        foreach (var map in AllMaps)
+        foreach (var map in AllMaps.Values)
         {
             map.InitializeTerrain();
             map.InitializeBorderRenderers();
@@ -177,10 +181,11 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
         SurfaceMap = null;
         SurfaceEncounter = null;
         SpaceEncounter = null;
-        foreach (var map in AllMaps.ToArray())
+        foreach (var map in AllMaps.Values.ToArray())
         {
             map.Dispose();
-            AllMaps.Remove(map);
+            AllMaps.Remove(map.Id);
+            SOMaps.Clear();
         }
 
         Terrain.Release();
@@ -199,21 +204,45 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
 
     public bool TryFindMapWithName(string mapName, out SubMap map)
     {
-        map = AllMaps.FirstOrDefault(map => map.Type == mapName);
+        map = AllMaps.Values.FirstOrDefault(map => map.Type == mapName);
         return map != null;
     }
 
-    public void ToggleActiveMap(SubMap to, bool shouldFocus = true)
+    public static void FocusOnActiveMap()
+    {
+        Vector2 pos;
+        float ortho;
+        if (ActiveMap.SavedCameraPosition != null)
+        {
+            pos = new Vector2(ActiveMap.SavedCameraPosition.Value.x, ActiveMap.SavedCameraPosition.Value.y);
+            // ReSharper disable once PossibleInvalidOperationException
+            ortho = ActiveMap.SavedCameraZoom.Value;
+        }
+        else
+        {
+            pos = ActiveMap.Center;
+            ortho = Instance.CameraControls.PreciseOrtho;
+        }
+
+        Instance.CameraControls.TeleportTo(pos, ortho);
+        A.Starmap?.DoCloseStarmap($"Focusing on map {ActiveMap.DisplayName}");
+    }
+    
+    public static void ToggleActiveMap(SubMap to, bool shouldFocus = true)
     {
         if (to == ActiveMap)
         {
+            if (shouldFocus)
+            {
+                FocusOnActiveMap();
+            }
             return;
         }
 
         if (ActiveMap != null)
         {
-            ActiveMap.SavedCameraPosition = CameraControls.transform.position;
-            ActiveMap.SavedCameraZoom = CameraControls.PreciseOrtho;
+            ActiveMap.SavedCameraPosition = Instance.CameraControls.transform.position;
+            ActiveMap.SavedCameraZoom = Instance.CameraControls.PreciseOrtho;
             ActiveMap.MarginRenderer?.ToggleBounds(false);
         }
 
@@ -221,21 +250,7 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
         ActiveMap.MarginRenderer?.ToggleBounds(true);
         if (shouldFocus)
         {
-            Vector2 pos;
-            float ortho;
-            if (ActiveMap.SavedCameraPosition != null)
-            {
-                pos = new Vector2(ActiveMap.SavedCameraPosition.Value.x, ActiveMap.SavedCameraPosition.Value.y);
-                // ReSharper disable once PossibleInvalidOperationException
-                ortho = ActiveMap.SavedCameraZoom.Value;
-            }
-            else
-            {
-                pos = ActiveMap.Center;
-                ortho = CameraControls.PreciseOrtho;
-            }
-
-            CameraControls.TeleportTo(pos, ortho);
+            FocusOnActiveMap();
         }
 
         A.S.Toolbox.BuildTool.SetUnlockedParams(null);
@@ -245,7 +260,7 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
             Cache.GridMenu.Show();
         }
 
-        RefreshRendering();
+        Instance.RefreshRendering();
     }
 
     private void ToggleGPURenderers(SubMap to)
@@ -334,7 +349,7 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
     public SubMap GetMapAt(int posIdx)
     {
         SubMap map = null;
-        foreach (var m in AllMaps)
+        foreach (var m in AllMaps.Values)
         {
             if (m.IsWithinBound(posIdx))
             {
@@ -353,7 +368,7 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
             toRegister.Id = NextId;
         }
 
-        AllMaps.Add(toRegister);
+        AllMaps.Add(toRegister.Id, toRegister);
     }
 
     public void SaveSpecial(SystemsDataSpecial sd)
@@ -375,12 +390,23 @@ public class MapSys : GameSystem, ISaveableSpecial, IOverlayProvider
                 var map = mapData.ToMap();
                 map.InitializeBorderRenderers();
                 map.Atmo.SubScribe();
-                AllMaps.Add(map);
+                AllMaps.Add(map.Id, map);
             }
 
+            foreach (var kvp in data.SOSubMaps)
+            {
+                if(S.Universe.ObjectsById.TryGetValue(kvp.Key, out var so))
+                {
+                    var subMap = TryGetSubMapFromId(kvp.Value);
+                    if (subMap != null)
+                    {
+                        SOMaps.Add(so, subMap);
+                    }
+                }
+            }
             Terrain = new Grid<Tile>("TerrainGrid", data.Width, data.Height, 1, Vector2.zero);
             Terrain.Data = data.Terrain;
-            var active = AllMaps.FirstOrDefault(x => x.Id == data.ActiveMapId);
+            var active = AllMaps[data.ActiveMapId];
             ToggleActiveMap(active);
             ShipMap = TryGetSubMapFromId(data.Map0Id);
             SurfaceMap = TryGetSubMapFromId(data.Map1Id);

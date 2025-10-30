@@ -23,21 +23,16 @@ public static class MapPatches
         {
             if (MapSys.ActiveMap == null)
             {
-                Printer.Warn($"Generating default maps for new saves...");
+                Printer.Warn($"Generating default maps for new save...");
                 var shipMap = new SubMap();
                 shipMap.Origin = new Vector2Int(1, 1);
                 shipMap.Size = new Vector2Int(MMConstants.MapSize, MMConstants.MapSize);
                 shipMap.Type = MMConstants.ShipMap;
+                shipMap.SpaceObject = A.S.Universe.Player;
                 MapSys.Instance.RegisterMap(shipMap);
                 MapSys.ShipMap = shipMap;
                 
-                var planet = new SubMap();
-                planet.Origin = new Vector2Int(MMConstants.MapSize + 2, 1);
-                planet.Size = new Vector2Int(MMConstants.MapSize, MMConstants.MapSize);
-                planet.Type = MMConstants.SurfaceMap;
-                MapSys.Instance.RegisterMap(planet);
-                MapSys.SurfaceMap = planet;
-                MapSys.Instance.ToggleActiveMap(shipMap);
+                MapSys.ToggleActiveMap(shipMap);
             }
         }
     }

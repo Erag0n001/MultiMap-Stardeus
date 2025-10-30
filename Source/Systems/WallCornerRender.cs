@@ -13,6 +13,11 @@ namespace MultiMap.Systems;
 
 public class WallCornerRender : GameSystem
 {
+    public readonly record struct ChunkData(int Layer, int PosIdx)
+    {
+        public readonly int Layer = Layer;
+        public readonly int PosIdx = PosIdx;
+    }
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void Register()
     {
@@ -26,7 +31,7 @@ public class WallCornerRender : GameSystem
 
     public TileLayer WallLayer;
     
-    public Dictionary<int, TileLayerChunk> CornerRendererChunks = new Dictionary<int, TileLayerChunk>();
+    public Dictionary<ChunkData, TileLayerChunk> CornerRendererChunks = new Dictionary<ChunkData, TileLayerChunk>();
     
     protected override void OnInitialize()
     {
@@ -40,22 +45,29 @@ public class WallCornerRender : GameSystem
         WallLayer = Parent.TileRenderer.GetLayer(1);
     }
 
-    public void OnChunkCreated(Grid<TileLayerChunk> chunks)
+    public void OnChunkCreated(TileLayer tileLayer, Grid<TileLayerChunk> chunks)
     {
         foreach (var chunk in chunks.Data)
         {
             var pos = Pos.ToVector(chunk.PosIdx);
             TileLayerChunk offGridChunk =
                 new TileLayerChunk(pos + new Vector2(0.5f, 0.5f), chunk.PosIdx, 0, chunk.GetSize());
-            CornerRendererChunks.Add(chunk.PosIdx, offGridChunk);
+            var key = new ChunkData(tileLayer.Layer, chunk.PosIdx);
+            CornerRendererChunks[key] = offGridChunk;
         }
     }
     
-    public static void SetNewCorner(SpriteData sprite, int pos)
+    public static void SetNewCorner(SpriteData sprite, int pos, int definitionLayerId)
     {
         Instance.WallLayer.TileToChunkPos(pos, out var chunkX, out var chunkY, out var cX, out var cY);
-        var chunk = Instance.WallLayer.GetChunks().Get(chunkX, chunkY);
-        var cornerChunk = Instance.CornerRendererChunks[chunk.PosIdx];
+        var chunks = Instance.WallLayer.GetChunks();
+        if (chunks == null)
+        {
+            chunks = Instance.WallLayer.BuildChunks();
+            Instance.WallLayer.SetChunks(chunks);
+        }
+        var chunk = chunks.Get(chunkX, chunkY);
+        var cornerChunk = Instance.CornerRendererChunks[new ChunkData(definitionLayerId, chunk.PosIdx)];
         cornerChunk.SetTile(cX, cY, sprite, MapRenderer.Resolver.GetWallTileShader());
     }
     
@@ -68,8 +80,8 @@ public class WallCornerRender : GameSystem
             {
                 continue;
             }
-            var position = chunks.ToWorldPos(chunk.PosIdx);
-            position += new Vector2(0.5f, 0.5f);
+            Vector3 position = chunks.ToWorldPos(chunk.PosIdx);
+            position += new Vector3(0.5f, 1f, 0.5f);
             List<MeshData> meshes = chunk.Meshes;
             for (int i = 0; i < meshes.Count; i++)
             {

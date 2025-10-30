@@ -24,16 +24,6 @@ public static class TileLayerPatches
         }
     }
 
-    [HarmonyPatch(typeof(TileLayer), nameof(TileLayer.Render))]
-    public static class RenderPatch
-    {
-        [HarmonyPostfix]
-        public static void Postfix(TileLayer __instance)
-        {
-            WallCornerRender.RenderCorners();
-        }
-    }
-
     [HarmonyPatch(typeof(TileLayer), "BuildChunks")]
     public static class BuildChunksPatch
     {
@@ -42,7 +32,7 @@ public static class TileLayerPatches
         {
             if (__instance.Layer == WorldLayer.Walls)
             {
-                WallCornerRender.Instance.OnChunkCreated(__result);
+                WallCornerRender.Instance.OnChunkCreated(__instance, __result);
             }
         }
     }

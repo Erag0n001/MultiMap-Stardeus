@@ -159,7 +159,6 @@ public static partial class JsonSerializer
                 }
                 
                 throw new Exception($"Type {type.AssemblyQualifiedName ?? type.Name} was not a collection type!");
-                break;
                 
             default:
                 throw new Exception($"Failed to deserialize collection token at line {token.Line} at position {token.Position}");

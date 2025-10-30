@@ -56,7 +56,7 @@ public static class TileGraphicResolverPatches
                 && northWest != null && northWest.IsConstructed)
             {
                 var target = Pos.W(pos);
-                WallCornerRender.SetNewCorner(spriteData, target);
+                WallCornerRender.SetNewCorner(spriteData, target, tile.Definition.LayerId);
                 return;
             }
             
@@ -65,7 +65,7 @@ public static class TileGraphicResolverPatches
                               && northEast != null && northEast.IsConstructed)
             {
                 var target = pos;
-                WallCornerRender.SetNewCorner(spriteData, target);
+                WallCornerRender.SetNewCorner(spriteData, target, tile.Definition.LayerId);
                 return;
             }
             
@@ -74,7 +74,7 @@ public static class TileGraphicResolverPatches
                               && southWest != null && southWest.IsConstructed)
             {
                 var target = Pos.SW(pos);
-                WallCornerRender.SetNewCorner(spriteData, target);
+                WallCornerRender.SetNewCorner(spriteData, target, tile.Definition.LayerId);
                 return;
             }
             
@@ -83,7 +83,7 @@ public static class TileGraphicResolverPatches
                               && southEast != null && southEast.IsConstructed)
             {
                 var target = Pos.S(pos);
-                WallCornerRender.SetNewCorner(spriteData, target);
+                WallCornerRender.SetNewCorner(spriteData, target, tile.Definition.LayerId);
                 return;
             }
         }

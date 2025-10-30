@@ -1,0 +1,14 @@
+{
+  "target" : "Config/Generation/Universe/PlanetCloseup.json",
+  "operations" : [
+    {
+      "op" : "add",
+      "path" : "/IsInteractive",
+      "value" : true
+    },
+    {
+      "op" : "remove",
+      "path" : "/StarmapDecoration"
+    }
+  ]
+}

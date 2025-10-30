@@ -13,7 +13,7 @@ public class CmdRemoveTilePatches
 {
     public static bool CheckIfShouldRemoveTile( int posIdx, int layer)
     {
-        var existing = A.S.Grids[WorldLayer.Floor].Get(posIdx);
+        var existing = A.S.Grids[layer].Get(posIdx);
         if (existing != null)
         {
             if(existing.HasComponent<UnbreakableComp>())

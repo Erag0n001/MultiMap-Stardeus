@@ -1,10 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Game;
+using Game.Constants;
+using Game.Data;
+using MultiMap.Misc;
 
 namespace MultiMap.Maps.Generators;
 
 public abstract class MapGenerator
 {
+    protected FastNoiseLite Noise = new FastNoiseLite();
     public abstract string Id { get; }
 
     public abstract void Generate(SubMap map);

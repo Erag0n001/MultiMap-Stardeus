@@ -1,4 +1,5 @@
-﻿using Game.Components;
+﻿using System.Linq;
+using Game.Components;
 using MultiMap.Misc;
 using UnityEngine;
 
@@ -18,7 +19,13 @@ public class MapLockedComp : BaseComponent<MapLockedComp>
     
     protected override void OnConfig()
     {
-        WhitelistedMaps = Config.GetStringSet(MMHashes.WhitelistedMapHash);
-        BlacklistedMaps = Config.GetStringSet(MMHashes.BlacklistedMapHash);
+        if (Config.TryFindProperty(MMHashes.WhitelistedMapHash, out var whitelist))
+        {
+            WhitelistedMaps = whitelist.StringSet;
+        }
+        if (Config.TryFindProperty(MMHashes.BlacklistedMapHash, out var blackList))
+        {
+            BlacklistedMaps = blackList.StringSet;
+        }
     }
 }

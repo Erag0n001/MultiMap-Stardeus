@@ -27,7 +27,7 @@ public class ConsoleCommandToggleMap : ConsoleCommand
         var name = args.GetString(1);
         if (MapSys.Instance.TryFindMapWithName(name, out var map))
         {
-            MapSys.Instance.ToggleActiveMap(map);
+            MapSys.ToggleActiveMap(map);
             return OK();
         }
         else

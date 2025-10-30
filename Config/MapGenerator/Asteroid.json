@@ -1,9 +1,0 @@
-{
-  "Id": "Asteroid",
-  "MapGeneratorId": "AsteroidGenerator",
-  "MapParams": {
-    "Amplitude": 1.5,
-    "Frequency": 0.25,
-    "Lacunarity": 2.0
-  }
-}

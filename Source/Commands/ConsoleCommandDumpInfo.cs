@@ -1,4 +1,5 @@
-﻿using KL.Console;
+﻿using Game;
+using KL.Console;
 using MultiMap.Maps.Generators;
 using MultiMap.Misc;
 using MultiMap.Systems;
@@ -10,6 +11,7 @@ public class ConsoleCommandDumpInfo : ConsoleCommand
 {
     private const string Map = "map";
     private const string Generators = "map_generator";
+    private const string SpaceObj = "space_obj";
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Load()
     {
@@ -44,10 +46,17 @@ public class ConsoleCommandDumpInfo : ConsoleCommand
                     Printer.Warn(gen.Id);
                 }
                 return OK();
+            case SpaceObj:
+                foreach (var obj in A.S.Universe.ObjectsById.Values)
+                {
+                    Printer.Warn(obj);
+                }
+                return OK();
             default:
                 Printer.Warn($"Did not enter a valid type to dump, available options are:");
                 Printer.Warn(Map);
                 Printer.Warn(Generators);
+                Printer.Warn(SpaceObj);
                 return OK();
         }
     }

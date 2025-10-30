@@ -1,6 +1,7 @@
 ﻿using Game;
 using Game.Constants;
 using Game.Data;
+using MultiMap.Maps.Biomes;
 
 namespace MultiMap.Misc;
 
@@ -17,6 +18,11 @@ public static class MMConstants
     
     private const string StructuresPath = "Structure";
     private const string FloorsPath = $"{StructuresPath}/Floors";
+    private const string WallsPath = $"{StructuresPath}/Walls";
     public static readonly Def MoonRock = The.Defs.Get($"{FloorsPath}/MoonFloor");
+    public static readonly Def MoonWall = The.Defs.Get($"{WallsPath}/RoughRock");
     public static readonly Def MapEdge = The.Defs.Get($"{FloorsPath}/MapEdge");
+    
+    public static readonly BiomeDef AsteroidBiome = BiomeDef.All["Asteroid"];
+    public static readonly BiomeDef ContinentalBiome = BiomeDef.All["Continental"];
 }

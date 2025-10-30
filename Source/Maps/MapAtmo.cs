@@ -4,6 +4,7 @@ using Game;
 using Game.Data;
 using Game.Data.Space;
 using KL.Grid;
+using MultiMap.Maps.Biomes;
 using MultiMap.Misc;
 using UnityEngine;
 
@@ -140,7 +141,7 @@ public class MapAtmo(SubMap p)
                 NeedsRecomputing = true;
         }
     }
-
+    
     public MapAtmoData ToData()
     {
         MapAtmoData data = new MapAtmoData();
